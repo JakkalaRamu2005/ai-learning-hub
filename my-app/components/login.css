@@ -13,3 +13,7 @@ input{
 .err-msg{
     color: red;
 }
+
+.redirect{
+    color: blue;
+}

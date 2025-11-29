@@ -73,11 +73,17 @@ const Register = () => {
 
 
                 <button type='submit'>Register</button>
+                <p>
+                    Already have an account?
+                    <a className='redirect' href="/login">Login here</a>
+                </p>
 
             </form>
 
 
             <p className='err-msg'>{msg}</p>
+
+
 
         </div>
     )
