@@ -18,7 +18,19 @@ email:{
 password: {
     type: String,
     required: true,
-}
+},
+place: {
+    type: String,
+    default: "",
+},
+bio:{
+    type:String,
+    default: "",
+},
+profileImage:{
+    type: String,
+    default: "",
+},
 
 
 });

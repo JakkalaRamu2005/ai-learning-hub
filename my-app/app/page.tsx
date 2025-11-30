@@ -2,7 +2,7 @@
 
 
 import { useRouter } from "next/navigation"
-
+import Profile from "./profile/page";
 const page = () => {
 const router = useRouter();
 
@@ -17,6 +17,8 @@ const handleLogout = async ()=>{
     <div>
     <h1>Welcome to Home page</h1>
     <button onClick={handleLogout}>Logout</button>
+
+    
     </div>
   )
 }
