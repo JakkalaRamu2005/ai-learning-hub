@@ -1,8 +1,8 @@
 "use client"
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import "./style/login.css"
 
-import "./login.css"
 const Register = () => {
 
     const router = useRouter();

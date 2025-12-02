@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import "../../components/login.css"
+
 
 export default function ForgotPassword() {
 
@@ -35,8 +35,6 @@ export default function ForgotPassword() {
                 <input placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 <button>send Reset Link</button>
             </form>
-
-
             <p>{msg}</p>
         </div>
     )
