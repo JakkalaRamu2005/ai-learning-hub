@@ -1,21 +1,79 @@
-*{
-    margin: 0;
-    padding: 0;
+/* Center everything on the screen */
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f2f2f2;   /* Light grey background */
 }
 
-.container{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;   
+/* Form box */
+form {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
 }
 
-label{
-    font-size: bold;
-    margin-bottom: 10px;
+/* Each label + input group */
+form div {
+  margin-bottom: 15px;
 }
 
-input{
-    margin-bottom: 15px;
+/* Labels */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #007bff;
+}
+
+/* Login Button */
+button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* Small text under button */
+p {
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Register link */
+.redirect {
+  margin-left: 5px;
+  color: #007bff;
+}
+
+/* Error / message box */
+.err-msg {
+  margin-top: 15px;
+  text-align: center;
+  color: red;
+  font-weight: bold;
 }

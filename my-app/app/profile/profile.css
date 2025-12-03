@@ -1,0 +1,65 @@
+/* Page container */
+div {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+/* Page title */
+h2 {
+  margin-bottom: 20px;
+}
+
+/* Profile image */
+img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+/* Text labels */
+label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+/* Input fields */
+input,
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+button {
+  padding: 8px 12px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Primary (Save / Edit) button */
+button[type="submit"],
+button:first-of-type {
+  background: #007bff;
+  color: white;
+}
+
+/* Cancel button */
+button[type="button"] {
+  background: #ddd;
+}
+
+/* Space between profile info items */
+p {
+  margin: 8px 0;
+}

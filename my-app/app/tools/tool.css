@@ -1,0 +1,50 @@
+/* Page container */
+div {
+  padding: 20px;
+  max-width: 700px;
+  margin: auto;
+  font-family: sans-serif;
+}
+
+/* Headings */
+h1 {
+  margin-bottom: 20px;
+}
+
+/* Search + Category dropdown */
+input,
+select {
+  padding: 8px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Each tool box */
+div > div {
+  padding: 15px;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+  border-radius: 6px;
+}
+
+/* Tool title */
+h3 {
+  margin: 0 0 10px 0;
+}
+
+/* Links */
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Separator */
+hr {
+  margin-top: 15px;
+}
