@@ -2,7 +2,7 @@
 import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from "next/navigation"
-import "./style/reset-password.css"
+import "./style/resetpassword.css"
 
 function ResetPasswordForm() {
     const [newPassword, setNewPassword] = useState("");
