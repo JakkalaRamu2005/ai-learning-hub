@@ -1,9 +1,9 @@
 "use client"
-import {useEffect, useState} from "react"
+import {Suspense, useEffect, useState} from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import "./verify.css"
 
-export default function VerifyEmail(){
+function VerifyEmailContent(){
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -87,4 +87,21 @@ return(
     );
 
 
+}
+
+export default function VerifyEmail(){
+    return(
+        <Suspense fallback={
+            <div className="verify-container">
+                <div className="verify-card">
+                    <div className="verify-content">
+                        <div className="spinner"></div>
+                        <h2 className="verify-title">Loading...</h2>
+                    </div>
+                </div>
+            </div>
+        }>
+            <VerifyEmailContent/>
+        </Suspense>
+    )
 }
