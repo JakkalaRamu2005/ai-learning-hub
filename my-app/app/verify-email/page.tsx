@@ -28,7 +28,7 @@ export default function VerifyEmail(){
 
     const verifyEmail = async (token:string)=>{
         try{
-            const response = await fetch(`api/emailverification?token=${token}`);
+            const response = await fetch(`/api/emailverification?token=${token}`);
             const data = await response.json();
 
 
