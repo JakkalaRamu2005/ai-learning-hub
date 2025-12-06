@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/lib/models/User";
 import jwt from "jsonwebtoken"
-
+import bcrypt from "bcrypt"
 
 export async function POST(request: Request) {
     try {
@@ -10,14 +10,31 @@ export async function POST(request: Request) {
 
         const { email, password } = await request.json();
 
+
+        if(!email || !password){
+            return NextResponse.json({message: "Please fill all fields"}, {status: 400});
+        }
+
+
+
         const user = await User.findOne({ email });
 
         if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
+        if(!user.isVerified){
+            return NextResponse.json({message: "Please verify your email before logging in"}, {status: 403})
+        };
 
-        if (user.password !== password) {
+        
+
+
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+
+        if (!isPasswordCorrect) {
             return NextResponse.json({ message: "Wrong password" }, { status: 400 });
         }
 
@@ -25,7 +42,7 @@ export async function POST(request: Request) {
 
 
 
-        const response = NextResponse.json({message: "Login successful", user}, {status: 200})
+        const response = NextResponse.json({message: "Login successful", user:{name: user.name, email: user.email}}, {status: 200})
 
         response.cookies.set("token", token,{
             httpOnly: false,
@@ -38,6 +55,6 @@ export async function POST(request: Request) {
 
         return response;
     } catch (error) {
-        return NextResponse.json({ message: "server error", error }, { status: 500 });
+        return NextResponse.json({ message: "something went wrong", error }, { status: 500 });
     }
 }

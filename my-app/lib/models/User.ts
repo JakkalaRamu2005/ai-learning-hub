@@ -29,7 +29,15 @@ const UserSchema = new mongoose.Schema({
     savedTools: {
         type: [String],
         default: [],
-    }
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    verificationToken: {
+        type: String,
+        default: "",
+    },
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

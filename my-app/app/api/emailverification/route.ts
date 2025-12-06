@@ -1,0 +1,46 @@
+import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/db";
+import User from "@/lib/models/User"
+import jwt from "jsonwebtoken"
+import { keyof } from "zod";
+
+
+export async function GET(req: Request){
+
+
+    try{
+        await connectDB();
+
+        const {searchParams} = new URL(req.url);
+        const token = searchParams.get("token");
+
+    if(!token){
+        return NextResponse.json({message: "Verfication token is missing"}, {status: 400});
+    }
+
+    const decoded:any = jwt.verify(token, process.env.JWT_SECRET!);
+
+    const user = await User.findOne({email: decoded.email});
+
+
+    
+    if(!user){
+        return NextResponse.json({message: "User not found"}, {status: 400});
+    }
+
+    if(user.isVerified){
+        return NextResponse.redirect(new URL("/login?message=already-verified", req.url));
+    }
+    
+
+    user.isVerified = true;
+    user.verificationToken = "";
+    await user.save();
+
+
+    return NextResponse.json(new URL("/login?message=verified", req.url))
+    }catch(error){
+        console.error("verification error:", error);
+        return NextResponse.redirect(new URL("/login?message=verification-failed", req.url))
+    }
+}
