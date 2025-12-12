@@ -53,28 +53,28 @@ const Login = () => {
             <div className="login-box">
                 <h2 className="login-title">Welcome Back</h2>
                 <p className="login-subtitle">Please login to your account</p>
-                
+
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="input-group">
                         <label htmlFor="email" className="input-label">Email</label>
-                        <input 
+                        <input
                             id="email"
-                            onChange={(e) => setMail(e.target.value)} 
-                            value={email} 
-                            type="email" 
-                            placeholder='Enter your email' 
+                            onChange={(e) => setMail(e.target.value)}
+                            value={email}
+                            type="email"
+                            placeholder='Enter your email'
                             className="input-field"
                         />
                     </div>
 
                     <div className="input-group">
                         <label htmlFor="password" className="input-label">Password</label>
-                        <input 
+                        <input
                             id="password"
-                            type="password" 
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)} 
-                            placeholder='Enter your password' 
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder='Enter your password'
                             className="input-field"
                         />
                     </div>
@@ -85,7 +85,7 @@ const Login = () => {
 
                     <div className="form-links">
                         <p className="register-text">
-                            Don't have an account? 
+                            Don&apos;t have an account?
                             <a className="link" href="/register"> Register here</a>
                         </p>
                         <p className="forgot-text">

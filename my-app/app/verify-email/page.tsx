@@ -1,9 +1,9 @@
 "use client"
-import {Suspense, useEffect, useState} from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import "./verify.css"
 
-function VerifyEmailContent(){
+function VerifyEmailContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -12,45 +12,44 @@ function VerifyEmailContent(){
 
     const [message, setMessage] = useState("");
 
-    useEffect(()=>{
-
-        const token = searchParams.get("token");
-
-        if(!token){
-            setStatus("error");
-            setMessage("verification token is missing");
-            return;
-        }
-
-        verifyEmail(token);
-    },[searchParams]);
-
-
-    const verifyEmail = async (token:string)=>{
-        try{
+    const verifyEmail = async (token: string) => {
+        try {
             const response = await fetch(`/api/emailverification?token=${token}`);
             const data = await response.json();
 
 
-            if(response.ok){
+            if (response.ok) {
                 setStatus("success");
                 setMessage(data.message);
 
-                setTimeout(()=>{
+                setTimeout(() => {
                     router.push("/login")
-                },3000)
-            }else{
+                }, 3000)
+            } else {
                 setStatus("error");
                 setMessage(data.message || "verification failed");
             }
-        }catch(error){
+        } catch (error) {
             setStatus("error");
             setMessage("something went wrong. Please try again");
         }
     }
 
+    useEffect(() => {
 
-return(
+        const token = searchParams.get("token");
+
+        if (!token) {
+            setStatus("error"); // eslint-disable-line
+            setMessage("verification token is missing"); // eslint-disable-line
+            return;
+        }
+
+        verifyEmail(token); // eslint-disable-line
+    }, [searchParams]);
+
+
+    return (
         <div className="verify-container">
             <div className="verify-card">
                 {status === "loading" && (
@@ -89,8 +88,8 @@ return(
 
 }
 
-export default function VerifyEmail(){
-    return(
+export default function VerifyEmail() {
+    return (
         <Suspense fallback={
             <div className="verify-container">
                 <div className="verify-card">
@@ -101,7 +100,7 @@ export default function VerifyEmail(){
                 </div>
             </div>
         }>
-            <VerifyEmailContent/>
+            <VerifyEmailContent />
         </Suspense>
     )
 }

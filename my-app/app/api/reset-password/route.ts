@@ -25,6 +25,7 @@ export async function POST(req: Request) {
 
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
         const user = await User.findById(decoded.id);

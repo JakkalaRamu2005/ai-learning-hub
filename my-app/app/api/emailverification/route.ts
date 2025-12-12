@@ -19,6 +19,7 @@ export async function GET(req: Request) {
             return NextResponse.json({ message: "Verfication token is missing" }, { status: 400 });
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
         const user = await User.findOne({ email: decoded.email });

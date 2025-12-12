@@ -10,15 +10,6 @@ export default function Tools() {
     const [searchText, setSearchText] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
 
-    useEffect(() => {
-        fetchTools();
-        fetchSavedTools();
-    }, []);
-
-    useEffect(() => {
-        filterTools();
-    }, [searchText, selectedCategory, tools]);
-
     const fetchTools = async () => {
         try {
             const res = await fetch("/api/tools");
@@ -42,6 +33,11 @@ export default function Tools() {
         }
     };
 
+    useEffect(() => {
+        fetchTools(); // eslint-disable-line react-hooks/exhaustive-deps
+        fetchSavedTools(); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []);
+
     const filterTools = () => {
         let filtered = tools;
 
@@ -60,6 +56,10 @@ export default function Tools() {
 
         setFilteredTools(filtered);
     };
+
+    useEffect(() => {
+        filterTools(); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [searchText, selectedCategory, tools]);
 
     const handleSaveTool = async (toolId: string) => {
         try {
@@ -130,7 +130,7 @@ export default function Tools() {
                 </div>
             ) : (
                 <div className="tools-grid">
-                    {filteredTools.map((tool: any, index:number) => (
+                    {filteredTools.map((tool: any, index: number) => (
                         <div key={index} className="tool-card">
                             <div className="tool-header">
                                 <h3 className="tool-name">{tool.name}</h3>

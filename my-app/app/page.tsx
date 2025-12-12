@@ -1,20 +1,19 @@
 "use client"
 
 
-import { useRouter } from "next/navigation"
+
 import Profile from "./profile/page";
 import Home from "@/components/Home";
-const page = () => {
-const router = useRouter();
+const Page = () => {
 
-  
+
   return (
     <div>
-   <Home/>
+      <Home />
 
-    
+
     </div>
   )
 }
 
-export default page
+export default Page

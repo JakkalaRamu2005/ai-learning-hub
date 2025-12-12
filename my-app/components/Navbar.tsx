@@ -21,7 +21,7 @@ export default function Navbar() {
 
     // Close menu when route changes
     useEffect(() => {
-        setIsMenuOpen(false);
+        setIsMenuOpen(false); // eslint-disable-line
     }, [pathname]);
 
     // Prevent body scroll when menu is open
@@ -65,8 +65,8 @@ export default function Navbar() {
                         <h2>AI Learning Hub</h2>
                     </Link>
 
-                    <button 
-                        className="menu-toggle" 
+                    <button
+                        className="menu-toggle"
                         onClick={toggleMenu}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                         aria-expanded={isMenuOpen}
@@ -79,29 +79,29 @@ export default function Navbar() {
                     </button>
 
                     <div className={`navbar-links ${isMenuOpen ? "active" : ""}`}>
-                        <Link 
-                            href="/" 
+                        <Link
+                            href="/"
                             className={`nav-link ${isActive("/") ? "active" : ""}`}
                         >
                             <span className="link-icon">🏠</span>
                             <span>Home</span>
                         </Link>
-                        <Link 
-                            href="/tools" 
+                        <Link
+                            href="/tools"
                             className={`nav-link ${isActive("/tools") ? "active" : ""}`}
                         >
                             <span className="link-icon">🛠️</span>
                             <span>AI Tools</span>
                         </Link>
-                        <Link 
-                            href="/learn" 
+                        <Link
+                            href="/learn"
                             className={`nav-link ${isActive("/learn") ? "active" : ""}`}
                         >
                             <span className="link-icon">📚</span>
                             <span>Learn</span>
                         </Link>
-                        <Link 
-                            href="/profile" 
+                        <Link
+                            href="/profile"
                             className={`nav-link ${isActive("/profile") ? "active" : ""}`}
                         >
                             <span className="link-icon">👤</span>

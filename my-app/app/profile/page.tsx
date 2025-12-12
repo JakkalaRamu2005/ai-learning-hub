@@ -17,10 +17,6 @@ export default function Profile() {
     const [isEditing, setIsEditing] = useState(false);
 
 
-    useEffect(() => {
-        fetchProfile();
-    }, [])
-
     const fetchProfile = async () => {
 
         const res = await fetch("/api/profile", {
@@ -41,6 +37,10 @@ export default function Profile() {
         }
 
     }
+
+    useEffect(() => {
+        fetchProfile(); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleUpdate = async (e: any) => {
         e.preventDefault();

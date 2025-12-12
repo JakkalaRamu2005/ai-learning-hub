@@ -28,10 +28,6 @@ export default function HomePage() {
   const [featured, setFeatured] = useState<FeaturedItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchHomeData();
-  }, []);
-
   const fetchHomeData = async () => {
     try {
       setTimeout(() => {
@@ -83,6 +79,10 @@ export default function HomePage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchHomeData(); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const learningPaths = [
     {

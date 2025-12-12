@@ -11,7 +11,7 @@ function ResetPasswordForm() {
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
 
-    const handleReset = async (e: any) => {
+    const handleReset = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const res = await fetch("/api/reset-password", {
@@ -22,7 +22,7 @@ function ResetPasswordForm() {
 
         const data = await res.json();
         setMsg(data.message);
-        
+
         if (res.ok) {
             router.push('/login');
         }

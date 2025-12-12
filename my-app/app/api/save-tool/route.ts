@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
         const { toolId } = await req.json();
 

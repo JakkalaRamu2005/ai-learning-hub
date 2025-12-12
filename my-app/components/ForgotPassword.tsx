@@ -8,7 +8,7 @@ export default function ForgotPassword() {
 
     const [msg, setMsg] = useState("");
 
-    const handleForgot = async (e: any) => {
+    const handleForgot = async (e: React.FormEvent) => {
 
         e.preventDefault();
 

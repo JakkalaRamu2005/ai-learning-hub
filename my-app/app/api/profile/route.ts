@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { connectDB } from "@/lib/db"
 import User from "@/lib/models/User"
 import jwt from "jsonwebtoken"
-import {cookies} from "next/headers"
+import { cookies } from "next/headers"
 
 
 export async function GET(req: Request) {
@@ -19,6 +19,7 @@ export async function GET(req: Request) {
     }
 
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
         const user = await User.findById(decoded.id);
 

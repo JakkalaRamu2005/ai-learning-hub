@@ -1,10 +1,10 @@
 "use client"
 
-import {useState, useEffect} from "react"
-import {useRouter} from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 
-export default function SavedTools(){
+export default function SavedTools() {
     const router = useRouter();
     const [tools, setTools] = useState([]);
 
@@ -13,24 +13,24 @@ export default function SavedTools(){
     const [loading, setLoading] = useState(true);
 
 
-    useEffect(()=>{
-        fetchSavedTools();
-},[])
-
-    const fetchSavedTools = async ()=>{
-        try{
+    const fetchSavedTools = async () => {
+        try {
             const res = await fetch("/api/saved-tools");
 
-            if(!res.ok){
+            if (!res.ok) {
                 router.push("/login");
                 return;
             }
             const data = await res.json();
             setSavedToolsData(data.savedTools || []);
-        }catch(error){
+        } catch (error) {
             console.error("Error fetching saved tools:", error);
             setLoading(false);
         }
     }
+
+    useEffect(() => {
+        fetchSavedTools(); // eslint-disable-line
+    }, [])
 
 }

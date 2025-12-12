@@ -18,6 +18,7 @@ export async function POST(req: Request) {
 
 
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
         const { name, place, bio, profileImage } = await req.json();
