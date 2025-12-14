@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import "./learn.css";
 
 interface LearningModule {
-    PathName: string;
-    ModuleNumber: string;
-    ModuleName: string;
-    Description: string;
-    Resources: string[];
-    EstimatedHours: string;
-    Difficulty: string;
+    Category: string;
+    SkillLevel: string;
+    VideoNumber: string;
+    VideoTitle: string;
+    ChannelName: string;
+    Duration: string;
+    VideoLink: string;
 }
 
 export default function LearnPage() {
@@ -27,6 +27,9 @@ export default function LearnPage() {
     // Video Modal State
     const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
+    // Expanded Cards State
+    const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
+
     useEffect(() => {
         async function fetchData() {
             try {
@@ -34,7 +37,7 @@ export default function LearnPage() {
                 if (!res.ok) throw new Error("Failed to fetch data");
                 const data = await res.json();
 
-                // Flatten the grouped data back to array for easier filtering
+                // Flatten the grouped data for filtering
                 const flatModules: LearningModule[] = [];
                 Object.values(data.modules).forEach((group: any) => {
                     flatModules.push(...group);
@@ -60,45 +63,51 @@ export default function LearnPage() {
         if (searchText) {
             const lowerSearch = searchText.toLowerCase();
             filtered = filtered.filter(module =>
-                module.ModuleName.toLowerCase().includes(lowerSearch) ||
-                module.Description.toLowerCase().includes(lowerSearch)
+                module.VideoTitle.toLowerCase().includes(lowerSearch) ||
+                module.ChannelName.toLowerCase().includes(lowerSearch)
             );
         }
 
         // Category Filter
         if (selectedCategory !== "All") {
-            filtered = filtered.filter(module => module.PathName === selectedCategory);
+            filtered = filtered.filter(module => module.Category === selectedCategory);
         }
 
-        // Difficulty Filter
+        // Difficulty Filter (Skill Level)
         if (selectedDifficulty !== "All") {
-            filtered = filtered.filter(module => module.Difficulty === selectedDifficulty);
+            filtered = filtered.filter(module => module.SkillLevel === selectedDifficulty);
         }
 
-        // Re-group by PathName
+        // Re-group by Category
         const grouped: Record<string, LearningModule[]> = {};
         filtered.forEach(module => {
-            if (!grouped[module.PathName]) {
-                grouped[module.PathName] = [];
+            if (!grouped[module.Category]) {
+                grouped[module.Category] = [];
             }
-            grouped[module.PathName].push(module);
+            grouped[module.Category].push(module);
         });
 
         setDisplayedModules(grouped);
 
     }, [searchText, selectedCategory, selectedDifficulty, allModules]);
 
-    const handleResourceClick = (e: React.MouseEvent, link: string) => {
+    const handleThumbnailClick = (link: string) => {
         const videoId = extractVideoID(link);
         if (videoId) {
-            e.preventDefault();
             setSelectedVideo(videoId);
         }
     };
 
+    const toggleExpand = (id: string) => {
+        setExpandedCards(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
+
     // Get unique categories and difficulties for dropdowns
-    const categories = ["All", ...Array.from(new Set(allModules.map(m => m.PathName)))];
-    const difficulties = ["All", "Beginner", "Intermediate", "Advanced"];
+    const categories = ["All", ...Array.from(new Set(allModules.map(m => m.Category)))];
+    const difficulties = ["All", ...Array.from(new Set(allModules.map(m => m.SkillLevel)))];
 
     if (loading) {
         return (
@@ -154,7 +163,7 @@ export default function LearnPage() {
                 <div className="search-box">
                     <input
                         type="text"
-                        placeholder="Search modules..."
+                        placeholder="Search videos..."
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                         className="search-input"
@@ -162,7 +171,7 @@ export default function LearnPage() {
                 </div>
 
                 <div className="category-filter">
-                    <label className="filter-label">Path:</label>
+                    <label className="filter-label">Category:</label>
                     <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
@@ -175,7 +184,7 @@ export default function LearnPage() {
                 </div>
 
                 <div className="category-filter">
-                    <label className="filter-label">Difficulty:</label>
+                    <label className="filter-label">Skill Level:</label>
                     <select
                         value={selectedDifficulty}
                         onChange={(e) => setSelectedDifficulty(e.target.value)}
@@ -188,58 +197,81 @@ export default function LearnPage() {
                 </div>
             </div>
 
-            <p className="results-count">{totalModulesFound} modules found</p>
+            <p className="results-count">{totalModulesFound} videos found</p>
 
             {totalModulesFound === 0 ? (
                 <div className="no-results">
-                    <p>No modules found matching your criteria.</p>
+                    <p>No learning modules found matching your criteria.</p>
                 </div>
             ) : (
-                Object.entries(displayedModules).map(([pathName, pathModules]) => (
-                    <section key={pathName} id={toSlug(pathName)} className="path-section">
+                Object.entries(displayedModules).map(([category, modules]) => (
+                    <section key={category} id={toSlug(category)} className="path-section">
                         <div className="path-header">
-                            <h2 className="path-name">{pathName}</h2>
+                            <h2 className="path-name">{category}</h2>
                             <span className="modules-count">
-                                {pathModules.length} Modules
+                                {modules.length} Videos
                             </span>
                         </div>
 
                         <div className="modules-grid">
-                            {pathModules.map((module, index) => (
-                                <div key={index} className="module-card">
-                                    <div className="module-meta">
-                                        <span className="module-number">Module {module.ModuleNumber}</span>
-                                        <span className={`module-difficulty ${module.Difficulty}`}>{module.Difficulty}</span>
-                                    </div>
+                            {modules.map((module, index) => {
+                                const uniqueId = `${module.Category}-${module.VideoNumber}`;
+                                const videoId = extractVideoID(module.VideoLink);
+                                const isExpanded = expandedCards[uniqueId];
 
-                                    <h3 className="module-name">{module.ModuleName}</h3>
-                                    <p className="module-description">{module.Description}</p>
+                                return (
+                                    <div key={index} className="module-card">
+                                        {/* Thumbnail */}
+                                        <div
+                                            className="module-thumbnail-container"
+                                            onClick={() => handleThumbnailClick(module.VideoLink)}
+                                        >
+                                            {videoId ? (
+                                                <img
+                                                    src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
+                                                    alt={module.VideoTitle}
+                                                    className="module-thumbnail"
+                                                />
+                                            ) : (
+                                                <div className="thumbnail-placeholder">No Thumbnail</div>
+                                            )}
+                                            <div className="play-overlay">
+                                                <span className="play-icon">▶</span>
+                                            </div>
+                                        </div>
 
-                                    <div className="module-hours-row">
-                                        <svg className="clock-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        {module.EstimatedHours} Hours
-                                    </div>
+                                        <div className="module-content">
+                                            <h3 className="module-name">{module.VideoTitle}</h3>
 
-                                    <div className="module-resources">
-                                        <h4 className="resources-title">Resources</h4>
-                                        <div className="resource-list">
-                                            {module.Resources.map((link, idx) => (
-                                                <a
-                                                    key={idx}
-                                                    href={link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="resource-link"
-                                                    onClick={(e) => handleResourceClick(e, link)}
-                                                >
-                                                    <span className="resource-icon">🔗</span>
-                                                    {GetDomainName(link)}
-                                                </a>
-                                            ))}
+                                            <button
+                                                className="know-more-btn"
+                                                onClick={() => toggleExpand(uniqueId)}
+                                            >
+                                                {isExpanded ? "Show Less" : "Know More"}
+                                            </button>
+
+                                            {isExpanded && (
+                                                <div className="module-details">
+                                                    <div className="detail-row">
+                                                        <span className="detail-label">Channel:</span>
+                                                        <span className="detail-value">{module.ChannelName}</span>
+                                                    </div>
+                                                    <div className="detail-row">
+                                                        <span className="detail-label">Duration:</span>
+                                                        <span className="detail-value">{module.Duration} mins</span>
+                                                    </div>
+                                                    <div className="detail-row">
+                                                        <span className="detail-label">Level:</span>
+                                                        <span className={`module-difficulty ${module.SkillLevel}`}>
+                                                            {module.SkillLevel}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </section>
                 ))
@@ -257,17 +289,8 @@ function toSlug(text: string) {
 }
 
 function extractVideoID(url: string) {
+    if (!url) return null;
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     const match = url.match(regExp);
     return (match && match[7].length == 11) ? match[7] : null;
-}
-
-function GetDomainName(url: string) {
-    try {
-        const domain = new URL(url).hostname.replace('www.', '');
-        if (domain.includes('youtube') || domain.includes('youtu.be')) return 'Watch Tutorial';
-        return domain;
-    } catch {
-        return 'View Resource';
-    }
 }

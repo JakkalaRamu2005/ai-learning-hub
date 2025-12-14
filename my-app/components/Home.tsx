@@ -241,30 +241,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Statistics Dashboard */}
-      <section className="dashboard">
-        <div className="dashboard-content">
-          <h2 className="section-title dashboard-title">Trusted by Learners Worldwide</h2>
-          <div className="dashboard-stats">
-            <div className="dashboard-item">
-              <h3 className="dashboard-number">100%</h3>
-              <p className="dashboard-label">Free Forever</p>
-            </div>
-            <div className="dashboard-item">
-              <h3 className="dashboard-number">500+</h3>
-              <p className="dashboard-label">Hours of Content</p>
-            </div>
-            <div className="dashboard-item">
-              <h3 className="dashboard-number">10K+</h3>
-              <p className="dashboard-label">Active Learners</p>
-            </div>
-            <div className="dashboard-item">
-              <h3 className="dashboard-number">24/7</h3>
-              <p className="dashboard-label">Access Anytime</p>
-            </div>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

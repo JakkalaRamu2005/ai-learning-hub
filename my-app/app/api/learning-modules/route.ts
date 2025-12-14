@@ -4,13 +4,13 @@ import { NextResponse } from 'next/server';
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1JbqFSwtCEmg51txSvDM4UpJ-4fsY8kqhO9YSG8OUgxE/export?format=csv&gid=567183491";
 
 export interface LearningModule {
-    PathName: string;
-    ModuleNumber: string;
-    ModuleName: string;
-    Description: string;
-    Resources: string[];
-    EstimatedHours: string;
-    Difficulty: string;
+    Category: string;
+    SkillLevel: string;
+    VideoNumber: string;
+    VideoTitle: string;
+    ChannelName: string;
+    Duration: string;
+    VideoLink: string;
 }
 
 export async function GET() {
@@ -23,13 +23,13 @@ export async function GET() {
         const text = await response.text();
         const modules: LearningModule[] = parseCSV(text);
 
-        // Group by PathName
+        // Group by Category
         const groupedModules: Record<string, LearningModule[]> = {};
         modules.forEach(module => {
-            if (!groupedModules[module.PathName]) {
-                groupedModules[module.PathName] = [];
+            if (!groupedModules[module.Category]) {
+                groupedModules[module.Category] = [];
             }
-            groupedModules[module.PathName].push(module);
+            groupedModules[module.Category].push(module);
         });
 
         return NextResponse.json({ modules: groupedModules });
@@ -44,7 +44,6 @@ function parseCSV(text: string): LearningModule[] {
     const data: LearningModule[] = [];
 
     // Skip header row
-    // We also need to filter out intermediate headers if they repeat
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
@@ -52,22 +51,17 @@ function parseCSV(text: string): LearningModule[] {
         const fields = parseCSVLine(line);
 
         // Check if this is a header row (sometimes repeated in sheets)
-        if (fields[0] === 'PathName' && fields[1] === 'ModuleNumber') continue;
+        if (fields[0] === 'Category' && fields[1] === 'Skill Level') continue;
 
         if (fields.length >= 7) {
-            // Clean up resources (split by comma if multiple links)
-            // The CSV parser might leave commas inside the "Resource" field
-            const rawResources = fields[4];
-            const resources = rawResources.split(',').map(r => r.trim()).filter(r => r.startsWith('http'));
-
             data.push({
-                PathName: fields[0],
-                ModuleNumber: fields[1],
-                ModuleName: fields[2],
-                Description: fields[3],
-                Resources: resources,
-                EstimatedHours: fields[5],
-                Difficulty: fields[6]
+                Category: fields[0],
+                SkillLevel: fields[1],
+                VideoNumber: fields[2],
+                VideoTitle: fields[3],
+                ChannelName: fields[4],
+                Duration: fields[5],
+                VideoLink: fields[6]
             });
         }
     }
