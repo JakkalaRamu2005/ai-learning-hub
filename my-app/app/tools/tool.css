@@ -2,19 +2,19 @@
 .tools-container {
     min-height: 100vh;
     background: var(--bg-primary);
-    padding: clamp(40px, 6vw, 60px) clamp(16px, 3vw, 24px);
+    padding: clamp(20px, 4vw, 40px) clamp(16px, 3vw, 24px);
     position: relative;
-    padding-top: 100px;
+    padding-top: 80px;
     /* Account for fixed navbar */
 }
 
 /* Header Section */
 .tools-title {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
     font-weight: 800;
     color: var(--text-primary);
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     letter-spacing: -0.02em;
     position: relative;
     z-index: 1;
@@ -23,8 +23,8 @@
 .tools-subtitle {
     text-align: center;
     color: var(--text-secondary);
-    margin-bottom: clamp(30px, 5vw, 40px);
-    font-size: clamp(1rem, 2vw, 1.15rem);
+    margin-bottom: clamp(20px, 3vw, 30px);
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
     line-height: 1.6;
     position: relative;
     z-index: 1;
@@ -35,13 +35,13 @@
 
 /* Filter Section */
 .filter-section {
-    max-width: 1200px;
-    margin: 0 auto clamp(24px, 4vw, 32px);
+    max-width: 900px;
+    margin: 0 auto clamp(16px, 3vw, 24px);
     display: flex;
-    gap: 1.25rem;
+    gap: 1rem;
     flex-wrap: wrap;
     background: white;
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     position: relative;
@@ -55,10 +55,10 @@
 
 .search-input {
     width: 100%;
-    padding: 14px 16px;
-    border: 2px solid var(--border-color);
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: var(--transition-fast);
     font-family: inherit;
     color: var(--text-primary);
@@ -89,8 +89,8 @@
 }
 
 .category-select {
-    padding: 14px 16px;
-    border: 2px solid var(--border-color);
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-size: 0.95rem;
     cursor: pointer;
@@ -114,7 +114,7 @@
 /* Results Count */
 .results-count {
     text-align: center;
-    color: var(--text-light-muted);
+    color: var(--text-primary);
     font-size: 1rem;
     margin-bottom: 1.5rem;
     font-weight: 500;
@@ -367,4 +367,72 @@
 .tool-link:focus-visible {
     outline: 2px solid var(--secondary-color);
     outline-offset: 2px;
+}
+
+/* Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.pagination-btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1a1a1a;
+    color: #e5e5e5;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #333;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.pagination-btn.active {
+    background: white;
+    color: black;
+    border-color: white;
+    font-weight: 600;
+}
+
+.pagination-btn.dots {
+    border: none;
+    background: transparent;
+    cursor: default;
+    color: var(--text-secondary);
+}
+
+.pagination-btn.next-btn {
+    padding: 0 16px;
+    width: auto;
+    gap: 4px;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Response to mobile */
+@media (max-width: 639px) {
+    .pagination-btn {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
 }

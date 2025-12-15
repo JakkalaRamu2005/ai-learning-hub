@@ -28,7 +28,7 @@ export default function ResourcesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Onboarding Context
+
 
 
     const [activeCategory, setActiveCategory] = useState("All Resources");

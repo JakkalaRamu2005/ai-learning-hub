@@ -15,7 +15,7 @@ interface LearningModule {
 
 export default function LearnPage() {
     const [allModules, setAllModules] = useState<LearningModule[]>([]);
-    const [displayedModules, setDisplayedModules] = useState<Record<string, LearningModule[]>>({});
+    const [filteredModules, setFilteredModules] = useState<LearningModule[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -30,7 +30,9 @@ export default function LearnPage() {
     // Expanded Cards State
     const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
 
-
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 9;
 
     useEffect(() => {
         async function fetchData() {
@@ -46,7 +48,7 @@ export default function LearnPage() {
                 });
 
                 setAllModules(flatModules);
-                setDisplayedModules(data.modules);
+                // Initial set will be handled by the filter effect
             } catch (err) {
                 setError("Failed to load learning modules. Please try again later.");
                 console.error(err);
@@ -80,16 +82,8 @@ export default function LearnPage() {
             filtered = filtered.filter(module => module.SkillLevel === selectedDifficulty);
         }
 
-        // Re-group by Category
-        const grouped: Record<string, LearningModule[]> = {};
-        filtered.forEach(module => {
-            if (!grouped[module.Category]) {
-                grouped[module.Category] = [];
-            }
-            grouped[module.Category].push(module);
-        });
-
-        setDisplayedModules(grouped);
+        setFilteredModules(filtered);
+        setCurrentPage(1); // Reset to first page on filter change
 
     }, [searchText, selectedCategory, selectedDifficulty, allModules]);
 
@@ -106,6 +100,74 @@ export default function LearnPage() {
             [id]: !prev[id]
         }));
     };
+
+    // Pagination Logic
+    const indexOfLastModule = currentPage * itemsPerPage;
+    const indexOfFirstModule = indexOfLastModule - itemsPerPage;
+    const currentModules = filteredModules.slice(indexOfFirstModule, indexOfLastModule);
+    const totalPages = Math.ceil(filteredModules.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const getPageNumbers = () => {
+        const pageNumbers = [];
+        const maxVisiblePages = 5;
+
+        if (totalPages <= maxVisiblePages + 2) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            if (currentPage > 3) {
+                pageNumbers.push(1);
+                pageNumbers.push('...');
+            } else {
+                for (let i = 1; i <= 3; i++) {
+                    pageNumbers.push(i);
+                }
+            }
+
+            if (currentPage > 3 && currentPage < totalPages - 2) {
+                pageNumbers.push(currentPage - 1);
+                pageNumbers.push(currentPage);
+                pageNumbers.push(currentPage + 1);
+            }
+
+            if (currentPage < totalPages - 2) {
+                pageNumbers.push('...');
+                pageNumbers.push(totalPages);
+            } else {
+                if (currentPage > 3) {
+                    // handled by simplePages logic below better
+                }
+            }
+        }
+
+        // Consistent simplified logic
+        if (totalPages <= 7) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        }
+
+        if (currentPage <= 4) {
+            return [1, 2, 3, 4, 5, '...', totalPages];
+        } else if (currentPage >= totalPages - 3) {
+            return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+        } else {
+            return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+        }
+    };
+
+    // Group current page modules for display
+    const displayedGroupedModules: Record<string, LearningModule[]> = {};
+    currentModules.forEach(module => {
+        if (!displayedGroupedModules[module.Category]) {
+            displayedGroupedModules[module.Category] = [];
+        }
+        displayedGroupedModules[module.Category].push(module);
+    });
 
     // Get unique categories and difficulties for dropdowns
     const categories = ["All", ...Array.from(new Set(allModules.map(m => m.Category)))];
@@ -133,7 +195,7 @@ export default function LearnPage() {
         );
     }
 
-    const totalModulesFound = Object.values(displayedModules).reduce((acc, curr) => acc + curr.length, 0);
+    const totalModulesFound = filteredModules.length;
 
     return (
         <div className="learn-container">
@@ -206,77 +268,103 @@ export default function LearnPage() {
                     <p>No learning modules found matching your criteria.</p>
                 </div>
             ) : (
-                Object.entries(displayedModules).map(([category, modules]) => (
-                    <section key={category} id={toSlug(category)} className="path-section">
-                        <div className="path-header">
-                            <h2 className="path-name">{category}</h2>
-                            <span className="modules-count">
-                                {modules.length} Videos
-                            </span>
-                        </div>
+                <>
+                    {Object.entries(displayedGroupedModules).map(([category, modules]) => (
+                        <section key={category} id={toSlug(category)} className="path-section">
+                            <div className="path-header">
+                                <h2 className="path-name">{category}</h2>
+                                <span className="modules-count">
+                                    {modules.length} Videos
+                                </span>
+                            </div>
 
-                        <div className="modules-grid">
-                            {modules.map((module, index) => {
-                                const uniqueId = `${module.Category}-${module.VideoNumber}`;
-                                const videoId = extractVideoID(module.VideoLink);
-                                const isExpanded = expandedCards[uniqueId];
+                            <div className="modules-grid">
+                                {modules.map((module, index) => {
+                                    const uniqueId = `${module.Category}-${module.VideoNumber}`;
+                                    const videoId = extractVideoID(module.VideoLink);
+                                    const isExpanded = expandedCards[uniqueId];
 
-                                return (
-                                    <div key={index} className="module-card">
-                                        {/* Thumbnail */}
-                                        <div
-                                            className="module-thumbnail-container"
-                                            onClick={() => handleThumbnailClick(module.VideoLink)}
-                                        >
-                                            {videoId ? (
-                                                <img
-                                                    src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
-                                                    alt={module.VideoTitle}
-                                                    className="module-thumbnail"
-                                                />
-                                            ) : (
-                                                <div className="thumbnail-placeholder">No Thumbnail</div>
-                                            )}
-                                            <div className="play-overlay">
-                                                <span className="play-icon">▶</span>
+                                    return (
+                                        <div key={index} className="module-card">
+                                            {/* Thumbnail */}
+                                            <div
+                                                className="module-thumbnail-container"
+                                                onClick={() => handleThumbnailClick(module.VideoLink)}
+                                            >
+                                                {videoId ? (
+                                                    <img
+                                                        src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`}
+                                                        alt={module.VideoTitle}
+                                                        className="module-thumbnail"
+                                                    />
+                                                ) : (
+                                                    <div className="thumbnail-placeholder">No Thumbnail</div>
+                                                )}
+                                                <div className="play-overlay">
+                                                    <span className="play-icon">▶</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="module-content">
+                                                <h3 className="module-name">{module.VideoTitle}</h3>
+
+                                                <button
+                                                    className="know-more-btn"
+                                                    onClick={() => toggleExpand(uniqueId)}
+                                                >
+                                                    {isExpanded ? "Show Less" : "Know More"}
+                                                </button>
+
+                                                {isExpanded && (
+                                                    <div className="module-details">
+                                                        <div className="detail-row">
+                                                            <span className="detail-label">Channel:</span>
+                                                            <span className="detail-value">{module.ChannelName}</span>
+                                                        </div>
+                                                        <div className="detail-row">
+                                                            <span className="detail-label">Duration:</span>
+                                                            <span className="detail-value">{module.Duration} mins</span>
+                                                        </div>
+                                                        <div className="detail-row">
+                                                            <span className="detail-label">Level:</span>
+                                                            <span className={`module-difficulty ${module.SkillLevel}`}>
+                                                                {module.SkillLevel}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    ))}
 
-                                        <div className="module-content">
-                                            <h3 className="module-name">{module.VideoTitle}</h3>
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="pagination-container">
+                            {getPageNumbers().map((number, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => typeof number === 'number' ? handlePageChange(number) : null}
+                                    className={`pagination-btn ${currentPage === number ? 'active' : ''} ${number === '...' ? 'dots' : ''}`}
+                                    disabled={number === '...'}
+                                >
+                                    {number}
+                                </button>
+                            ))}
 
-                                            <button
-                                                className="know-more-btn"
-                                                onClick={() => toggleExpand(uniqueId)}
-                                            >
-                                                {isExpanded ? "Show Less" : "Know More"}
-                                            </button>
-
-                                            {isExpanded && (
-                                                <div className="module-details">
-                                                    <div className="detail-row">
-                                                        <span className="detail-label">Channel:</span>
-                                                        <span className="detail-value">{module.ChannelName}</span>
-                                                    </div>
-                                                    <div className="detail-row">
-                                                        <span className="detail-label">Duration:</span>
-                                                        <span className="detail-value">{module.Duration} mins</span>
-                                                    </div>
-                                                    <div className="detail-row">
-                                                        <span className="detail-label">Level:</span>
-                                                        <span className={`module-difficulty ${module.SkillLevel}`}>
-                                                            {module.SkillLevel}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="pagination-btn next-btn"
+                            >
+                                Next &gt;
+                            </button>
                         </div>
-                    </section>
-                ))
+                    )}
+                </>
             )}
         </div>
     );

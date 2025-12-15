@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         const SHEET_ID = "1JbqFSwtCEmg51txSvDM4UpJ-4fsY8kqhO9YSG8OUgxE";
-        const SHEET_NAME = "Sheet1";
+        const SHEET_NAME = "ai-tools";
 
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
-        const response = await fetch(url);
+        const response = await fetch(url, { cache: 'no-store' });
 
         // Check if Google Sheets gave us an error
         if (!response.ok) {
