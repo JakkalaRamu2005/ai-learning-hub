@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import ShareModal from "@/components/ShareModal"
 import "./tool.css"
@@ -54,7 +54,7 @@ const ToolCard = ({ tool, isSaved, onToggleSave, onShare }: {
     );
 };
 
-export default function Tools() {
+function ToolsContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -355,5 +355,13 @@ export default function Tools() {
                 </>
             )}
         </div>
+    );
+}
+
+export default function Tools() {
+    return (
+        <Suspense fallback={<div className="loading">Loading tools...</div>}>
+            <ToolsContent />
+        </Suspense>
     );
 }
