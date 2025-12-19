@@ -1,50 +1,154 @@
 # AI Learning Hub
 
-Welcome to the AI Learning Hub! This is a website designed to help anyone learn about Artificial Intelligence easily. We provide curated free resources, learning paths, and tools to get you started.
+Welcome to the AI Learning Hub! This is a comprehensive platform designed to help anyone learn about Artificial Intelligence easily. We provide curated free resources, learning paths, AI tools directory, and personalized learning experiences.
 
-## Key Features
+## ✨ Key Features
 
-*   **Free Resources:** A large collection of free AI courses, books, and newsletters.
-*   **Learning Modules:** Step-by-step guides to learn specific AI skills.
-*   **User Accounts:** Secure login and registration system to save your progress.
-*   **Profile System:** Manage your personal details and settings.
-*   **Modern Design:** Beautiful and responsive interface that works on mobile and desktop.
-*   **Dark Mode:** Switch between light and dark themes for comfortable reading.
+### **Core Features**
+*   **AI Tools Directory:** Curated collection of 120+ AI tools with filtering, search, and save functionality
+*   **Free Resources:** 250+ free AI courses, books, newsletters, and practice platforms
+*   **Learning Modules:** 180+ step-by-step video tutorials organized by skill level
+*   **User Accounts:** Secure authentication with email verification and password reset
+*   **Profile System:** Manage personal details, bio, and saved tools
+*   **Social Sharing:** Share tools and resources across multiple platforms
 
-## Technologies Used
+### **Technical Features**
+*   **Modern Architecture:** Clean, scalable codebase following industry best practices
+*   **Type Safety:** Comprehensive TypeScript coverage with strict mode
+*   **API Client Layer:** Centralized API calls with error handling
+*   **Custom Hooks:** Reusable React hooks for common functionality
+*   **Responsive Design:** Beautiful UI that works on mobile, tablet, and desktop
+*   **Dark Mode:** Switch between light and dark themes
+*   **Performance Optimized:** Pagination, lazy loading, and efficient data fetching
 
-*   **Next.js:** For building the website.
-*   **TypeScript:** For safe and reliable code.
-*   **Tailwind CSS & Custom CSS:** For styling the pages.
-*   **Google Sheets:** Used as a simple backend database for content.
-*   **MongoDB:** For user authentication and data.
+## 🛠️ Technologies Used
 
-## How to Run Locally
+*   **Framework:** Next.js 16 (App Router)
+*   **Language:** TypeScript 5
+*   **Styling:** Tailwind CSS 4 + Custom CSS Modules
+*   **Database:** MongoDB with Mongoose ODM
+*   **Authentication:** NextAuth.js
+*   **Email:** Nodemailer
+*   **Validation:** Zod
+*   **Data Source:** Google Sheets API (for resources)
+*   **Code Quality:** ESLint + Prettier
 
-Follow these simple steps to run the project on your computer:
+## 📁 Project Structure
 
-1.  **Install Dependencies:**
-    Open your terminal in the project folder and run:
+```
+my-app/
+├── app/                    # Next.js App Router pages and API routes
+├── components/             # React components
+├── config/                 # Configuration files (env, site config)
+├── hooks/                  # Custom React hooks
+├── lib/
+│   ├── api/               # API client and services
+│   ├── db/                # Database connection and models
+│   └── utils/             # Utility functions and constants
+├── types/                 # TypeScript type definitions
+└── docs/                  # Documentation
+```
+
+For detailed architecture information, see [REFACTORING.md](./docs/REFACTORING.md)
+
+## 🚀 Getting Started
+
+### **Prerequisites**
+- Node.js 18+ and npm
+- MongoDB instance (local or cloud)
+- Gmail account for email functionality (optional)
+
+### **Installation**
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd my-app
+    ```
+
+2.  **Install dependencies:**
     ```bash
     npm install
     ```
 
-2.  **Run the Server:**
-    Start the development server by running:
+3.  **Set up environment variables:**
+    ```bash
+    cp .env.example .env
+    ```
+    Then edit `.env` with your actual values:
+    - `MONGO_URI`: Your MongoDB connection string
+    - `NEXTAUTH_SECRET`: Generate with `openssl rand -base64 32`
+    - `EMAIL_*`: Your email configuration
+    - Other optional variables
+
+4.  **Run the development server:**
     ```bash
     npm run dev
     ```
 
-3.  **Open in Browser:**
-    Open [http://localhost:3000](http://localhost:3000) in your web browser to see the app.
+5.  **Open in browser:**
+    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## Project Structure
+## 📖 Documentation
 
-*   `app/`: Contains all the pages (Home, Login, Profile, Resources).
-*   `components/`: Reusable UI parts like buttons, cards, and navigation bars.
-*   `lib/`: Helper functions and database connections.
-*   `types/`: Definitions for data structures (TypeScript).
+- **[Refactoring Guide](./docs/REFACTORING.md)**: Detailed explanation of the codebase refactoring
+- **[Environment Setup](./ENV_SETUP.md)**: Environment variables configuration guide
+
+## 🧪 Code Quality
+
+```bash
+# Run linter
+npm run lint
+
+# Format code with Prettier
+npx prettier --write .
+```
+
+## 🏗️ Architecture Highlights
+
+### **API Client Layer**
+Centralized API calls with type safety:
+```typescript
+import { toolsService } from '@/lib/api/services';
+
+const { tools } = await toolsService.getAll();
+```
+
+### **Custom Hooks**
+Reusable logic extraction:
+```typescript
+import { useTools, usePagination } from '@/hooks';
+
+const { tools, loading, toggleSaveTool } = useTools();
+```
+
+### **Type Safety**
+Comprehensive TypeScript interfaces:
+```typescript
+import type { Tool, Resource } from '@/types';
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- MongoDB for the database
+- All open-source contributors
 
 ---
 
+**Made with ❤️ for AI learners worldwide**
+
 *Happy Learning!*
+
