@@ -2,9 +2,6 @@
 import { usePathname } from "next/navigation";
 import "./globals.css"
 
-
-
-
 // ... existing code ...
 
 import Navbar from "@/components/Navbar";
@@ -18,7 +15,7 @@ export default function RootLayout({
 }>) {
 
   const pathname = usePathname();
-  const noNavbarPages = ["/login", "/register", "/forgotpassword", "/reset-password"];
+  const noNavbarPages = ["/login", "/register", "/forgot-password", "/reset-password"];
 
   const showNavbar = !noNavbarPages.includes(pathname);
 

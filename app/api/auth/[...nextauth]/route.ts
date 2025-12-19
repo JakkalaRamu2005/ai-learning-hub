@@ -1,7 +1,7 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { connectDB } from "@/lib/db";
-import User from "@/lib/models/User";
+import { User } from "@/lib/db/models";
 
 const authOptions: AuthOptions = {
     providers: [
@@ -26,12 +26,14 @@ const authOptions: AuthOptions = {
                     const existingUser = await User.findOne({ email: user.email });
 
                     if (!existingUser) {
-                        await User.create({
+                        const newUser = new User({
                             name: user.name,
                             email: user.email,
                             image: user.image,
                             googleId: account.providerAccountId,
+                            isVerified: true, // Google users are pre-verified
                         });
+                        await newUser.save();
                     }
                     return true;
                 } catch (error) {

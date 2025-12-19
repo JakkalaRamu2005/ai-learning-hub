@@ -106,7 +106,7 @@ const Login = () => {
                             <a className="link" href="/register"> Register here</a>
                         </p>
                         <p className="forgot-text">
-                            <a href="/forgotpassword" className="link">Forgot Password?</a>
+                            <a href="/forgot-password" className="link">Forgot Password?</a>
                         </p>
                     </div>
                 </form>

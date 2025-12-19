@@ -1,19 +1,11 @@
-"use client"
+"use client";
 
-
-
-import Profile from "./profile/page";
 import Home from "@/components/Home";
-const Page = () => {
 
-
+export default function Page() {
   return (
     <div>
       <Home />
-
-
     </div>
-  )
+  );
 }
-
-export default Page

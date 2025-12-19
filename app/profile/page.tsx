@@ -47,7 +47,7 @@ export default function Profile() {
 
         setMsg("updating....");
 
-        const response = await fetch("/api/updateprofile", {
+        const response = await fetch("/api/update-profile", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -172,11 +172,6 @@ export default function Profile() {
 
 
 }
-
-
-
-
-
 
 
 

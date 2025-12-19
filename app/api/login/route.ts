@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import User from "@/lib/models/User";
+import { User } from "@/lib/db/models";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
@@ -11,8 +11,8 @@ export async function POST(request: Request) {
         const { email, password } = await request.json();
 
 
-        if(!email || !password){
-            return NextResponse.json({message: "Please fill all fields"}, {status: 400});
+        if (!email || !password) {
+            return NextResponse.json({ message: "Please fill all fields" }, { status: 400 });
         }
 
 
@@ -23,12 +23,14 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        if(!user.isVerified){
-            return NextResponse.json({message: "Please verify your email before logging in"}, {status: 403})
+        if (!user.isVerified) {
+            return NextResponse.json({ message: "Please verify your email before logging in" }, { status: 403 })
         };
 
-        
-
+        // Check if user has a password (not Google OAuth user)
+        if (!user.password) {
+            return NextResponse.json({ message: "Please use Google Sign-In for this account" }, { status: 400 });
+        }
 
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -38,18 +40,18 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: "Wrong password" }, { status: 400 });
         }
 
-        const token = jwt.sign({id: user._id, email: user.email}, process.env.JWT_SECRET!, {expiresIn: "7d"})
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: "7d" })
 
 
 
-        const response = NextResponse.json({message: "Login successful", user:{name: user.name, email: user.email}}, {status: 200})
+        const response = NextResponse.json({ message: "Login successful", user: { name: user.name, email: user.email } }, { status: 200 })
 
-        response.cookies.set("token", token,{
+        response.cookies.set("token", token, {
             httpOnly: false,
             secure: true,
-            sameSite:"strict",
-            maxAge: 7*24*60*60,
-            path:"/",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60,
+            path: "/",
 
         })
 
