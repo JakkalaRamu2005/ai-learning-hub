@@ -118,6 +118,7 @@ export default function Navbar() {
                         </span>
                     </button>
 
+
                     <div className={`navbar-links ${isMenuOpen ? "active" : ""}`}>
                         <Link
                             href="/"
@@ -125,6 +126,13 @@ export default function Navbar() {
                         >
                             <span className="link-icon">🏠</span>
                             <span>Home</span>
+                        </Link>
+                        <Link
+                            href="/courses"
+                            className={`nav-link ${isActive("/courses") ? "active" : ""}`}
+                        >
+                            <span className="link-icon">🎓</span>
+                            <span>Courses</span>
                         </Link>
                         <Link
                             href="/tools"
@@ -180,6 +188,9 @@ export default function Navbar() {
                                         <div className="profile-header-mobile">
                                             <p className="user-email">{session.user?.email}</p>
                                         </div>
+                                        <Link href="/my-courses" className="dropdown-item">
+                                            <span>🎓</span> My Courses
+                                        </Link>
                                         <Link href="/profile" className="dropdown-item">
                                             <span>👤</span> Your Profile
                                         </Link>

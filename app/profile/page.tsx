@@ -16,6 +16,12 @@ export default function Profile() {
     const [msg, setMsg] = useState("");
     const [isEditing, setIsEditing] = useState(false);
 
+    // Learning statistics
+    const [enrolledCourses, setEnrolledCourses] = useState(0);
+    const [completedCourses, setCompletedCourses] = useState(0);
+    const [totalLearningTime, setTotalLearningTime] = useState(0);
+    const [learningStreak, setLearningStreak] = useState(0);
+
 
     const fetchProfile = async () => {
 
@@ -32,6 +38,12 @@ export default function Profile() {
             setPlace(data.place);
             setBio(data.bio);
             setProfileImage(data.profileImage);
+
+            // Set learning statistics
+            setEnrolledCourses(data.enrolledCourses?.length || 0);
+            setCompletedCourses(data.completedCourses?.length || 0);
+            setTotalLearningTime(data.totalLearningTime || 0);
+            setLearningStreak(data.learningStreak || 0);
         } else {
             router.push("/login")
         }
@@ -87,6 +99,44 @@ export default function Profile() {
                                 <span className="detail-value">{bio || "Not provided"}</span>
                             </div>
                         </div>
+
+                        {/* Learning Statistics */}
+                        <div className="learning-stats">
+                            <h3 className="stats-title">📊 Learning Statistics</h3>
+                            <div className="stats-grid">
+                                <div className="stat-item">
+                                    <span className="stat-icon">🎓</span>
+                                    <div className="stat-content">
+                                        <span className="stat-value">{enrolledCourses}</span>
+                                        <span className="stat-label">Enrolled Courses</span>
+                                    </div>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-icon">✅</span>
+                                    <div className="stat-content">
+                                        <span className="stat-value">{completedCourses}</span>
+                                        <span className="stat-label">Completed</span>
+                                    </div>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-icon">⏱️</span>
+                                    <div className="stat-content">
+                                        <span className="stat-value">
+                                            {Math.floor(totalLearningTime / 60)}h {totalLearningTime % 60}m
+                                        </span>
+                                        <span className="stat-label">Learning Time</span>
+                                    </div>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-icon">🔥</span>
+                                    <div className="stat-content">
+                                        <span className="stat-value">{learningStreak}</span>
+                                        <span className="stat-label">Day Streak</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <button onClick={() => setIsEditing(true)} className="edit-btn">Edit Profile</button>
                     </div>
                 ) : (
@@ -161,14 +211,6 @@ export default function Profile() {
         </div>
 
     )
-
-
-
-
-
-
-
-
 
 
 }

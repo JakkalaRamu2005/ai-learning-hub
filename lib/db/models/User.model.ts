@@ -13,6 +13,11 @@ export interface IUser extends Document {
     place?: string;
     bio?: string;
     savedTools: string[];
+    enrolledCourses: string[]; // Course IDs
+    completedCourses: string[]; // Course IDs
+    totalLearningTime: number; // in minutes
+    learningStreak: number; // consecutive days
+    lastLearningDate?: Date;
     isVerified: boolean;
     verificationToken?: string;
     resetPasswordToken?: string;
@@ -68,6 +73,27 @@ const UserSchema = new mongoose.Schema<IUser>(
         savedTools: {
             type: [String],
             default: [],
+        },
+        enrolledCourses: {
+            type: [String],
+            default: [],
+        },
+        completedCourses: {
+            type: [String],
+            default: [],
+        },
+        totalLearningTime: {
+            type: Number,
+            default: 0,
+            min: 0,
+        },
+        learningStreak: {
+            type: Number,
+            default: 0,
+            min: 0,
+        },
+        lastLearningDate: {
+            type: Date,
         },
         isVerified: {
             type: Boolean,
