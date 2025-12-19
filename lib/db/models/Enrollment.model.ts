@@ -30,6 +30,7 @@ export interface IEnrollment extends Document {
     certificateId?: string;
     createdAt: Date;
     updatedAt: Date;
+    calculateProgress(): void;
 }
 
 const ModuleProgressSchema = new mongoose.Schema<IModuleProgress>({
