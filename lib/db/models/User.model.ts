@@ -12,6 +12,8 @@ export interface IUser extends Document {
     profileImage?: string;
     place?: string;
     bio?: string;
+    role: "user" | "admin" | "instructor";
+    permissions: string[];
     savedTools: string[];
     enrolledCourses: string[]; // Course IDs
     completedCourses: string[]; // Course IDs
@@ -70,6 +72,15 @@ const UserSchema = new mongoose.Schema<IUser>(
             default: "",
             maxlength: [500, "Bio must be less than 500 characters"],
         },
+        role: {
+            type: String,
+            enum: ["user", "admin", "instructor"],
+            default: "user",
+        },
+        permissions: {
+            type: [String],
+            default: [],
+        },
         savedTools: {
             type: [String],
             default: [],
@@ -116,10 +127,10 @@ const UserSchema = new mongoose.Schema<IUser>(
 );
 
 // Indexes for better query performance
-UserSchema.index({ email: 1 });
-UserSchema.index({ googleId: 1 });
+// Note: email and googleId already have unique indexes from schema definition
 UserSchema.index({ verificationToken: 1 });
 UserSchema.index({ resetPasswordToken: 1 });
+UserSchema.index({ role: 1 });
 
 // Prevent password from being returned in queries by default
 UserSchema.set("toJSON", {

@@ -1,0 +1,100 @@
+/* Instructor-specific styles */
+.instructor-layout {
+    /* Inherit from admin layout */
+}
+
+.instructor-sidebar {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.sidebar-subtitle {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.5rem;
+    font-weight: 400;
+}
+
+/* Quick Actions Grid */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.quick-action-card {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    text-align: center;
+    border: 2px solid transparent;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(72, 187, 120, 0.2);
+    border-color: #48bb78;
+}
+
+.action-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.quick-action-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 0.5rem;
+}
+
+.quick-action-card p {
+    font-size: 0.875rem;
+    color: #718096;
+    margin: 0;
+}
+
+/* Info Box */
+.getting-started-content {
+    max-width: 800px;
+}
+
+.info-box {
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(56, 161, 105, 0.05));
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 4px solid #48bb78;
+}
+
+.info-box h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 1rem;
+}
+
+.info-box p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: 0.75rem 0;
+    color: #2d3748;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(72, 187, 120, 0.1);
+}
+
+.feature-list li:last-child {
+    border-bottom: none;
+}

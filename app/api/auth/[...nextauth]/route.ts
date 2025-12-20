@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { connectDB } from "@/lib/db";
 import { User } from "@/lib/db/models";
 
-const authOptions: AuthOptions = {
+export const authOptions: AuthOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -43,17 +43,36 @@ const authOptions: AuthOptions = {
             }
             return true;
         },
-        async jwt({ token, user, account }) {
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
                 token.email = user.email;
             }
+
+            // Fetch fresh user data on each token refresh
+            if (token.email) {
+                await connectDB();
+                const dbUser = await User.findOne({ email: token.email })
+                    .select("_id email name role permissions isVerified image")
+                    .lean();
+
+                if (dbUser) {
+                    token.id = dbUser._id.toString();
+                    token.role = dbUser.role;
+                    token.permissions = dbUser.permissions || [];
+                    token.isVerified = dbUser.isVerified;
+                }
+            }
+
             return token;
         },
         async session({ session, token }) {
             if (token && session.user) {
                 session.user.id = token.id as string;
                 session.user.email = token.email as string;
+                (session.user as any).role = token.role;
+                (session.user as any).permissions = token.permissions;
+                (session.user as any).isVerified = token.isVerified;
             }
             return session;
         },

@@ -3,12 +3,14 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import "./style/navbar.css"
 
 export default function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
     const { data: session } = useSession();
+    const { isAdmin, isInstructor, user } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -187,7 +189,29 @@ export default function Navbar() {
                                     <div className="profile-dropdown-menu">
                                         <div className="profile-header-mobile">
                                             <p className="user-email">{session.user?.email}</p>
+                                            {user?.role && (
+                                                <span className={`role-badge-nav ${user.role}`}>
+                                                    {user.role === "admin" && "👑 Admin"}
+                                                    {user.role === "instructor" && "👨‍🏫 Instructor"}
+                                                    {user.role === "user" && "👤 User"}
+                                                </span>
+                                            )}
                                         </div>
+
+                                        {/* Admin Panel Link */}
+                                        {isAdmin && (
+                                            <Link href="/admin" className="dropdown-item admin-item">
+                                                <span>👑</span> Admin Panel
+                                            </Link>
+                                        )}
+
+                                        {/* Instructor Dashboard Link */}
+                                        {isInstructor && !isAdmin && (
+                                            <Link href="/instructor" className="dropdown-item instructor-item">
+                                                <span>👨‍🏫</span> Instructor Dashboard
+                                            </Link>
+                                        )}
+
                                         <Link href="/my-courses" className="dropdown-item">
                                             <span>🎓</span> My Courses
                                         </Link>

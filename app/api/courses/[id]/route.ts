@@ -8,12 +8,12 @@ import { Course, Enrollment } from "@/lib/db/models";
  */
 export async function GET(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await connectDB();
 
-        const courseId = params.id;
+        const { id: courseId } = await params;
 
         const course = await Course.findById(courseId).select("-__v").lean();
 
@@ -54,12 +54,12 @@ export async function GET(
  */
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await connectDB();
 
-        const courseId = params.id;
+        const { id: courseId } = await params;
         const updates = await req.json();
 
         // Recalculate total duration if modules are updated
@@ -109,12 +109,12 @@ export async function PATCH(
  */
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await connectDB();
 
-        const courseId = params.id;
+        const { id: courseId } = await params;
 
         const course = await Course.findByIdAndDelete(courseId);
 

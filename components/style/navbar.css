@@ -503,6 +503,57 @@
     background: #fef2f2;
 }
 
+/* Role Badge in Navbar */
+.role-badge-nav {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+.role-badge-nav.admin {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #854d0e;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.role-badge-nav.instructor {
+    background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+    color: #22543d;
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+}
+
+.role-badge-nav.user {
+    background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
+    color: #2c5282;
+    box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
+}
+
+/* Special Menu Items */
+.dropdown-item.admin-item {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    font-weight: 600;
+}
+
+.dropdown-item.admin-item:hover {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 237, 78, 0.2));
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+.dropdown-item.instructor-item {
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(154, 230, 180, 0.1));
+    border: 1px solid rgba(72, 187, 120, 0.3);
+    font-weight: 600;
+}
+
+.dropdown-item.instructor-item:hover {
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.2), rgba(154, 230, 180, 0.2));
+    border-color: rgba(72, 187, 120, 0.5);
+}
+
 .profile-header-mobile {
     display: none;
 }

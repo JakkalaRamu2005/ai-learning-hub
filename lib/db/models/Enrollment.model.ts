@@ -61,12 +61,10 @@ const EnrollmentSchema = new mongoose.Schema<IEnrollment>(
         userId: {
             type: String,
             required: [true, "User ID is required"],
-            index: true,
         },
         courseId: {
             type: String,
             required: [true, "Course ID is required"],
-            index: true,
         },
         enrolledAt: {
             type: Date,
@@ -151,11 +149,10 @@ EnrollmentSchema.methods.calculateProgress = function () {
 };
 
 // Pre-save hook to calculate progress
-EnrollmentSchema.pre("save", function (next) {
+EnrollmentSchema.pre("save", function () {
     if (this.isModified("progress")) {
         this.calculateProgress();
     }
-    next();
 });
 
 const Enrollment: Model<IEnrollment> =
