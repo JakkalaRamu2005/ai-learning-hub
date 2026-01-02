@@ -52,19 +52,7 @@ export const PERMISSIONS = {
  */
 export const ROLE_PERMISSIONS: Record<UserRole, readonly string[]> = {
     user: [
-        // Users can only view their own data and enrolled courses
-    ] as const,
-
-    instructor: [
-        // Instructors can manage their own courses
-        PERMISSIONS.COURSES_VIEW_ALL,
-        PERMISSIONS.COURSES_CREATE,
-        PERMISSIONS.COURSES_UPDATE,
-        PERMISSIONS.QUIZZES_CREATE,
-        PERMISSIONS.QUIZZES_UPDATE,
-        PERMISSIONS.QUIZZES_DELETE,
-        PERMISSIONS.ANALYTICS_VIEW,
-        PERMISSIONS.FORUM_MODERATE,
+        // Users can only view their own data and saved resources
     ] as const,
 
     admin: [
@@ -76,7 +64,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly string[]> = {
 /**
  * User Roles
  */
-export type UserRole = "user" | "admin" | "instructor";
+export type UserRole = "user" | "admin";
 
 /**
  * Permission type

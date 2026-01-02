@@ -10,7 +10,7 @@ export default function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
     const { data: session } = useSession();
-    const { isAdmin, isInstructor, user } = useAuth();
+    const { user } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -130,13 +130,6 @@ export default function Navbar() {
                             <span>Home</span>
                         </Link>
                         <Link
-                            href="/courses"
-                            className={`nav-link ${isActive("/courses") ? "active" : ""}`}
-                        >
-                            <span className="link-icon">🎓</span>
-                            <span>Courses</span>
-                        </Link>
-                        <Link
                             href="/tools"
                             className={`nav-link ${isActive("/tools") ? "active" : ""}`}
                         >
@@ -149,6 +142,20 @@ export default function Navbar() {
                         >
                             <span className="link-icon">📚</span>
                             <span>Learn</span>
+                        </Link>
+                        <Link
+                            href="/blogs"
+                            className={`nav-link ${isActive("/blogs") ? "active" : ""}`}
+                        >
+                            <span className="link-icon">📰</span>
+                            <span>Blogs</span>
+                        </Link>
+                        <Link
+                            href="/videos"
+                            className={`nav-link ${isActive("/videos") ? "active" : ""}`}
+                        >
+                            <span className="link-icon">🎬</span>
+                            <span>Videos</span>
                         </Link>
                         <Link
                             href="/resources"
@@ -192,29 +199,11 @@ export default function Navbar() {
                                             {user?.role && (
                                                 <span className={`role-badge-nav ${user.role}`}>
                                                     {user.role === "admin" && "👑 Admin"}
-                                                    {user.role === "instructor" && "👨‍🏫 Instructor"}
                                                     {user.role === "user" && "👤 User"}
                                                 </span>
                                             )}
                                         </div>
 
-                                        {/* Admin Panel Link */}
-                                        {isAdmin && (
-                                            <Link href="/admin" className="dropdown-item admin-item">
-                                                <span>👑</span> Admin Panel
-                                            </Link>
-                                        )}
-
-                                        {/* Instructor Dashboard Link */}
-                                        {isInstructor && !isAdmin && (
-                                            <Link href="/instructor" className="dropdown-item instructor-item">
-                                                <span>👨‍🏫</span> Instructor Dashboard
-                                            </Link>
-                                        )}
-
-                                        <Link href="/my-courses" className="dropdown-item">
-                                            <span>🎓</span> My Courses
-                                        </Link>
                                         <Link href="/profile" className="dropdown-item">
                                             <span>👤</span> Your Profile
                                         </Link>

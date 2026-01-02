@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 
 
 const Login = () => {
@@ -96,6 +97,15 @@ const Login = () => {
                     >
                         <FcGoogle size={22} />
                         LOG IN WITH GOOGLE
+                    </button>
+
+                    <button
+                        type="button"
+                        className="github-btn"
+                        onClick={() => signIn("github", { callbackUrl: "/" })}
+                    >
+                        <FaGithub size={22} />
+                        LOG IN WITH GITHUB
                     </button>
 
                     {msg && <p className={`message-text ${msgType}`}>{msg}</p>}

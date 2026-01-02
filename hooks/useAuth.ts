@@ -20,7 +20,6 @@ interface UseAuthReturn {
     isAuthenticated: boolean;
     isLoading: boolean;
     isAdmin: boolean;
-    isInstructor: boolean;
     hasRole: (role: UserRole) => boolean;
     hasPermission: (permission: Permission) => boolean;
     hasAnyRole: (roles: UserRole[]) => boolean;
@@ -54,10 +53,6 @@ export function useAuth(): UseAuthReturn {
         return user?.role === "admin";
     }, [user]);
 
-    const isInstructor = useMemo(() => {
-        return user?.role === "instructor" || user?.role === "admin";
-    }, [user]);
-
     const hasRole = (role: UserRole): boolean => {
         return user?.role === role;
     };
@@ -76,7 +71,6 @@ export function useAuth(): UseAuthReturn {
         isAuthenticated,
         isLoading,
         isAdmin,
-        isInstructor,
         hasRole,
         hasPermission: checkPermission,
         hasAnyRole,

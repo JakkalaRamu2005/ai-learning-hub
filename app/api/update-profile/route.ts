@@ -23,7 +23,9 @@ export async function POST(req: Request) {
 
         const { name, place, bio, profileImage } = await req.json();
         const user = await User.findByIdAndUpdate(
-            decoded.id, { name, place, bio, profileImage }, { new: true }
+            decoded.id,
+            { name, place, bio, profileImage, image: profileImage },
+            { new: true }
         );
 
         if (!user) {

@@ -108,7 +108,7 @@ export async function requireAdmin(): Promise<AuthUser> {
  * @throws AuthError if user is not an instructor or admin
  */
 export async function requireInstructor(): Promise<AuthUser> {
-    return requireRole(["instructor", "admin"]);
+    return requireRole(["admin"]);
 }
 
 /**
@@ -177,7 +177,7 @@ export async function isAdmin(): Promise<boolean> {
 export async function isInstructor(): Promise<boolean> {
     try {
         const user = await getAuthUser();
-        return user.role === "instructor" || user.role === "admin";
+        return user.role === "admin";
     } catch {
         return false;
     }

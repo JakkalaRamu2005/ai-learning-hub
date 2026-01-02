@@ -1,0 +1,101 @@
+.articleDetailContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.8;
+    color: #1a1a1a;
+}
+
+.backButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    transition: transform 0.2s ease;
+}
+
+.backButton:hover {
+    transform: translateX(-5px);
+}
+
+.articleHeroImage {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.articleMeta {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+.detailSource {
+    color: #6366f1;
+    font-weight: 600;
+    background: #f5f3ff;
+    padding: 0.2rem 0.8rem;
+    border-radius: 6px;
+}
+
+.articleFullTitle {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    color: #111827;
+}
+
+.articleBodyContent {
+    font-size: 1.15rem;
+    color: #374151;
+    white-space: pre-wrap;
+    /* Preserves paragraphs from API */
+}
+
+.articleBodyContent p {
+    margin-bottom: 1.5rem;
+}
+
+.loadingFull,
+.errorFull {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+}
+
+.placeholderHero {
+    width: 100%;
+    height: 300px;
+    background: #f3f4f6;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .articleFullTitle {
+        font-size: 1.8rem;
+    }
+
+    .articleBodyContent {
+        font-size: 1.05rem;
+    }
+}

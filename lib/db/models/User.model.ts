@@ -8,18 +8,15 @@ export interface IUser extends Document {
     email: string;
     password?: string;
     googleId?: string;
+    githubId?: string;
     image?: string;
     profileImage?: string;
     place?: string;
     bio?: string;
-    role: "user" | "admin" | "instructor";
+    role: "user" | "admin";
     permissions: string[];
     savedTools: string[];
-    enrolledCourses: string[]; // Course IDs
-    completedCourses: string[]; // Course IDs
-    totalLearningTime: number; // in minutes
-    learningStreak: number; // consecutive days
-    lastLearningDate?: Date;
+    completedModules: string[];
     isVerified: boolean;
     verificationToken?: string;
     resetPasswordToken?: string;
@@ -55,6 +52,11 @@ const UserSchema = new mongoose.Schema<IUser>(
             unique: true,
             sparse: true,
         },
+        githubId: {
+            type: String,
+            unique: true,
+            sparse: true,
+        },
         image: {
             type: String,
         },
@@ -74,7 +76,7 @@ const UserSchema = new mongoose.Schema<IUser>(
         },
         role: {
             type: String,
-            enum: ["user", "admin", "instructor"],
+            enum: ["user", "admin"],
             default: "user",
         },
         permissions: {
@@ -85,26 +87,9 @@ const UserSchema = new mongoose.Schema<IUser>(
             type: [String],
             default: [],
         },
-        enrolledCourses: {
+        completedModules: {
             type: [String],
             default: [],
-        },
-        completedCourses: {
-            type: [String],
-            default: [],
-        },
-        totalLearningTime: {
-            type: Number,
-            default: 0,
-            min: 0,
-        },
-        learningStreak: {
-            type: Number,
-            default: 0,
-            min: 0,
-        },
-        lastLearningDate: {
-            type: Date,
         },
         isVerified: {
             type: Boolean,

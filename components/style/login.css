@@ -107,6 +107,29 @@
     border-color: #d1d5db;
 }
 
+.github-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #24292e;
+    color: white;
+    padding: 12px;
+    border: 1px solid #24292e;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.github-btn:hover {
+    background: #1b1f23;
+    border-color: #1b1f23;
+}
+
+
 .message-text {
     text-align: center;
     font-size: 0.95rem;

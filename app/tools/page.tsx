@@ -4,18 +4,148 @@ import { useSearchParams, useRouter } from "next/navigation"
 import ShareModal from "@/components/ShareModal"
 import "./tool.css"
 
+const StarRating = ({ rating, interactive = false, onSetRating }: { rating: number, interactive?: boolean, onSetRating?: (r: number) => void }) => {
+    return (
+        <div className="star-rating">
+            {[1, 2, 3, 4, 5].map((s) => (
+                <span
+                    key={s}
+                    className={`star ${s <= rating ? 'filled' : ''} ${interactive ? 'interactive' : ''}`}
+                    onClick={() => interactive && onSetRating?.(s)}
+                >
+                    ★
+                </span>
+            ))}
+        </div>
+    );
+};
+
+const ReviewSection = ({ toolId, onClose }: { toolId: string, onClose: () => void }) => {
+    const [reviews, setReviews] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [newComment, setNewComment] = useState("");
+    const [newRating, setNewRating] = useState(5);
+    const [submitting, setSubmitting] = useState(false);
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const res = await fetch(`/api/reviews?toolId=${toolId}`);
+                const data = await res.json();
+                if (data.success) setReviews(data.reviews);
+            } catch (err) { console.error(err); }
+            finally { setLoading(false); }
+        };
+        fetchReviews();
+    }, [toolId]);
+
+    const handlePostReview = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newComment.trim()) return;
+
+        setSubmitting(true);
+        try {
+            const res = await fetch("/api/reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ toolId, rating: newRating, comment: newComment })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setReviews([data.review, ...reviews]);
+                setNewComment("");
+                setNewRating(5);
+            } else {
+                alert(data.message || "Failed to post review");
+            }
+        } catch (err) { console.error(err); }
+        finally { setSubmitting(false); }
+    };
+
+    const handleLike = async (reviewId: string) => {
+        // Optimistic UI for likes
+        setReviews(prev => prev.map(r => {
+            if (r._id === reviewId) {
+                const isLiked = r.isLiked; // Needs to be calculated or stored
+                return { ...r, likes: isLiked ? r.likes.slice(0, -1) : [...r.likes, "temp"], isLiked: !isLiked };
+            }
+            return r;
+        }));
+
+        try {
+            await fetch("/api/reviews/like", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reviewId })
+            });
+        } catch (err) { console.error(err); }
+    };
+
+    return (
+        <div className="review-section-overlay">
+            <div className="review-section">
+                <div className="review-header">
+                    <h4>User Reviews</h4>
+                    <button className="close-reviews" onClick={onClose}>×</button>
+                </div>
+
+                <form className="add-review-form" onSubmit={handlePostReview}>
+                    <StarRating rating={newRating} interactive onSetRating={setNewRating} />
+                    <textarea
+                        placeholder="Write a micro-review (max 280 chars)..."
+                        maxLength={280}
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        required
+                    />
+                    <button type="submit" disabled={submitting} className="post-review-btn">
+                        {submitting ? "Posting..." : "Post Review"}
+                    </button>
+                </form>
+
+                <div className="reviews-list">
+                    {loading ? <p>Loading reviews...</p> :
+                        reviews.length === 0 ? <p className="no-reviews">No reviews yet. Be the first!</p> :
+                            reviews.map(review => (
+                                <div key={review._id} className="review-item">
+                                    <div className="review-user-info">
+                                        <div className="user-avatar">{review.user.name[0]}</div>
+                                        <div className="user-meta">
+                                            <span className="user-name">{review.user.name}</span>
+                                            <StarRating rating={review.rating} />
+                                        </div>
+                                    </div>
+                                    <p className="review-comment">{review.comment}</p>
+                                    <div className="review-footer">
+                                        <button className={`like-btn ${review.isLiked ? 'active' : ''}`} onClick={() => handleLike(review._id)}>
+                                            <span className="heart">❤</span> {review.likes.length}
+                                        </button>
+                                        <span className="review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const ToolCard = ({ tool, isSaved, onToggleSave, onShare }: {
     tool: any,
     isSaved: boolean,
     onToggleSave: (id: string) => void,
     onShare: (tool: any) => void
 }) => {
-    const [expanded, setExpanded] = useState(false);
+    const [showReviews, setShowReviews] = useState(false);
 
     return (
         <div className="tool-card">
             <div className="tool-header">
-                <h3 className="tool-name">{tool.name}</h3>
+                <h3 className="tool-name">
+                    <a href={tool.link} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        {tool.name}
+                    </a>
+                </h3>
                 <div className="tool-actions">
                     <button
                         onClick={() => onShare(tool)}
@@ -35,21 +165,34 @@ const ToolCard = ({ tool, isSaved, onToggleSave, onShare }: {
                     </button>
                 </div>
             </div>
-            <span className="tool-category">{tool.category}</span>
 
-            {expanded && <p className="tool-description">{tool.description}</p>}
+            <div className="tool-meta">
+                <div className="rating-info">
+                    <StarRating rating={Math.round(tool.averageRating || 0)} />
+                    <span className="rating-value">{tool.averageRating || "0.0"}</span>
+                    <span className="rating-count">({tool.reviewCount})</span>
+                </div>
+                {tool.weekAdded && <span className="tool-week-badge">{tool.weekAdded}</span>}
+            </div>
 
-            <button
-                onClick={() => setExpanded(!expanded)}
-                className="know-more-btn"
-            >
-                {expanded ? "Show Less" : "Know More"}
+            <div className="tool-genre">
+                <span className="tool-category">{tool.category}</span>
+                {tool.averageRating >= 4.5 && <span className="sentiment-tag highly-recommended">Highly Recommended</span>}
+                {tool.averageRating >= 4.0 && tool.averageRating < 4.5 && <span className="sentiment-tag popular">Popular</span>}
+            </div>
+
+            <p className="tool-description">{tool.description}</p>
+
+            <button className="reviews-toggle-btn" onClick={() => setShowReviews(true)}>
+                💬 Reviews & Ratings
             </button>
 
             <div className="tool-footer">
                 <span className="tool-pricing">{tool.pricing}</span>
-                <a href={tool.link} target="_blank" className="tool-link">Visit Tool →</a>
+                <a href={tool.link} target="_blank" className="tool-link" rel="noopener noreferrer">Visit Tool →</a>
             </div>
+
+            {showReviews && <ReviewSection toolId={tool._id} onClose={() => setShowReviews(false)} />}
         </div>
     );
 };
@@ -95,7 +238,7 @@ function ToolsContent() {
         try {
             const res = await fetch("/api/saved-tools");
             const data = await res.json();
-            setSavedTools(data.savedTools || []);
+            setSavedTools(data.savedToolIds || []);
         } catch (error) {
             console.error("Error fetching saved tools:", error);
         }

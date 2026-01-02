@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import "./ShareModal.css";
+import "./style/ShareModal.css"
 
 interface ShareModalProps {
     isOpen: boolean;

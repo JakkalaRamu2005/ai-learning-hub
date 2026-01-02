@@ -1,5 +1,6 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { connectDB } from "@/lib/db";
 import { User } from "@/lib/db/models";
 
@@ -8,6 +9,10 @@ export const authOptions: AuthOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        }),
+        GitHubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID!,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
         }),
     ],
     secret: process.env.NEXTAUTH_SECRET,
@@ -32,6 +37,28 @@ export const authOptions: AuthOptions = {
                             image: user.image,
                             googleId: account.providerAccountId,
                             isVerified: true, // Google users are pre-verified
+                        });
+                        await newUser.save();
+                    }
+                    return true;
+                } catch (error) {
+                    console.error("Error saving user to MongoDB", error);
+                    return false;
+                }
+            }
+
+            if (account?.provider === "github") {
+                await connectDB();
+                try {
+                    const existingUser = await User.findOne({ email: user.email });
+
+                    if (!existingUser) {
+                        const newUser = new User({
+                            name: user.name,
+                            email: user.email,
+                            image: user.image,
+                            githubId: account.providerAccountId,
+                            isVerified: true, // GitHub users are pre-verified
                         });
                         await newUser.save();
                     }

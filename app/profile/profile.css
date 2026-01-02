@@ -218,15 +218,52 @@
     box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
+.upload-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 10px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+}
+
+.image-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--secondary-color);
+}
+
+.file-input {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    width: 100%;
+}
+
+.upload-spinner {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
 .message-text {
     text-align: center;
-    color: #dc2626;
+    color: #059669;
+    /* Success color by default */
     font-size: 0.95rem;
     font-weight: 500;
-    background: #fee2e2;
+    background: #ecfdf5;
     padding: 10px;
     border-radius: var(--radius-sm);
 }
+
+.message-text.error {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
 
 .form-buttons {
     display: flex;

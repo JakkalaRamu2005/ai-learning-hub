@@ -137,7 +137,7 @@ export default function Footer() {
                 {/* Bottom Bar */}
                 <div className="footer-bottom">
                     <p>
-                        &copy; {currentYear} Smart Dharani. All rights reserved.
+                        &copy; {currentYear} AI Learning Hub. All rights reserved.
                     </p>
                     <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', opacity: 0.8 }}>
                         Made with <span className="heart-icon">❤️</span> in India

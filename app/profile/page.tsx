@@ -23,6 +23,8 @@ export default function Profile() {
     const [learningStreak, setLearningStreak] = useState(0);
 
 
+    const [uploading, setUploading] = useState(false);
+
     const fetchProfile = async () => {
 
         const res = await fetch("/api/profile", {
@@ -54,6 +56,37 @@ export default function Profile() {
         fetchProfile(); // eslint-disable-line react-hooks/exhaustive-deps
     }, [])
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        setMsg("Uploading image...");
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const res = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setProfileImage(data.imageUrl);
+                setMsg("Image uploaded successfully!");
+            } else {
+                setMsg(data.error || "Upload failed");
+            }
+        } catch (error) {
+            setMsg("Error uploading image");
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleUpdate = async (e: any) => {
         e.preventDefault();
 
@@ -65,6 +98,14 @@ export default function Profile() {
             credentials: "include",
             body: JSON.stringify({ name, place, bio, profileImage }),
         })
+
+        if (response.ok) {
+            setMsg("Profile updated successfully!");
+            setIsEditing(false);
+            fetchProfile();
+        } else {
+            setMsg("Failed to update profile");
+        }
     }
 
 
@@ -76,11 +117,13 @@ export default function Profile() {
 
                 {!isEditing ? (
                     <div className="profile-view">
-                        {profileImage && (
-                            <div className="profile-image-wrapper">
-                                <img src={profileImage} alt="Profile" className="profile-image" />
-                            </div>
-                        )}
+                        <div className="profile-image-wrapper">
+                            <img
+                                src={profileImage || "https://res.cloudinary.com/dzt6v3p6p/image/upload/v1735741639/user_placeholder_v0_a_0_rvjljk.png"}
+                                alt="Profile"
+                                className="profile-image"
+                            />
+                        </div>
                         <div className="profile-details">
                             <div className="detail-item">
                                 <span className="detail-label">Name:</span>
@@ -142,6 +185,25 @@ export default function Profile() {
                 ) : (
                     <form onSubmit={handleUpdate} className="profile-form">
                         <div className="input-group">
+                            <label className="input-label">Profile Photo</label>
+                            <div className="upload-container">
+                                <img
+                                    src={profileImage || "https://res.cloudinary.com/dzt6v3p6p/image/upload/v1735741639/user_placeholder_v0_a_0_rvjljk.png"}
+                                    alt="Preview"
+                                    className="image-preview"
+                                />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    disabled={uploading}
+                                    className="file-input"
+                                />
+                                {uploading && <span className="upload-spinner">Uploading...</span>}
+                            </div>
+                        </div>
+
+                        <div className="input-group">
                             <label htmlFor="name" className="input-label">Name</label>
                             <input
                                 id="name"
@@ -149,6 +211,7 @@ export default function Profile() {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 className="input-field"
+                                required
                             />
                         </div>
 
@@ -158,7 +221,6 @@ export default function Profile() {
                                 id="email"
                                 type="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
                                 className="input-field"
                                 disabled
                             />
@@ -187,17 +249,6 @@ export default function Profile() {
                             />
                         </div>
 
-                        <div className="input-group">
-                            <label htmlFor="profileImage" className="input-label">Profile Image URL</label>
-                            <input
-                                id="profileImage"
-                                type="text"
-                                value={profileImage}
-                                onChange={(e) => setProfileImage(e.target.value)}
-                                placeholder="Paste image link"
-                                className="input-field"
-                            />
-                        </div>
 
                         {msg && <p className="message-text">{msg}</p>}
 
