@@ -9,13 +9,14 @@
 }
 
 .profile-box {
-    background: white;
+    background: var(--bg-primary);
     padding: 3rem;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
     width: 100%;
     max-width: 650px;
     animation: fadeInUp 0.5s ease;
+    border: 1px solid var(--border-color);
 }
 
 .profile-title {
@@ -305,5 +306,5 @@
 }
 
 .cancel-btn:hover {
-    background: #e5e7eb;
+    background: var(--border-color);
 }

@@ -204,12 +204,6 @@ export default function ResourcesPage() {
                     <p className="hero-subtitle">
                         Curated collection of <span className="highlight-text">130+ free resources</span> to master AI - from beginner friendly tools to advanced engineering certifications.
                     </p>
-
-                    <SearchBar onSearch={setSearchQuery} />
-
-                    <p className="results-count">
-                        Showing {filteredResources.length} of {resources.length} resources
-                    </p>
                 </div>
             </div>
 

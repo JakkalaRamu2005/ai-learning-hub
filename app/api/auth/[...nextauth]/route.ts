@@ -21,13 +21,13 @@ export const authOptions: AuthOptions = {
     },
     pages: {
         signIn: "/login",
-        error: "/login",
+        error: "/auth/error",
     },
     callbacks: {
         async signIn({ user, account }) {
             if (account?.provider === "google") {
-                await connectDB();
                 try {
+                    await connectDB();
                     const existingUser = await User.findOne({ email: user.email });
 
                     if (!existingUser) {
@@ -36,20 +36,24 @@ export const authOptions: AuthOptions = {
                             email: user.email,
                             image: user.image,
                             googleId: account.providerAccountId,
-                            isVerified: true, // Google users are pre-verified
+                            isVerified: true,
                         });
                         await newUser.save();
+                        console.log("New Google user created:", user.email);
+                    } else {
+                        console.log("Existing Google user logged in:", user.email);
                     }
-                    return true;
                 } catch (error) {
-                    console.error("Error saving user to MongoDB", error);
-                    return false;
+                    console.error("Error in Google sign-in:", error);
+                    // Still return true to allow sign-in even if DB save fails
+                    // User data will be in JWT token
                 }
+                return true;
             }
 
             if (account?.provider === "github") {
-                await connectDB();
                 try {
+                    await connectDB();
                     const existingUser = await User.findOne({ email: user.email });
 
                     if (!existingUser) {
@@ -58,15 +62,18 @@ export const authOptions: AuthOptions = {
                             email: user.email,
                             image: user.image,
                             githubId: account.providerAccountId,
-                            isVerified: true, // GitHub users are pre-verified
+                            isVerified: true,
                         });
                         await newUser.save();
+                        console.log("New GitHub user created:", user.email);
+                    } else {
+                        console.log("Existing GitHub user logged in:", user.email);
                     }
-                    return true;
                 } catch (error) {
-                    console.error("Error saving user to MongoDB", error);
-                    return false;
+                    console.error("Error in GitHub sign-in:", error);
+                    // Still return true to allow sign-in even if DB save fails
                 }
+                return true;
             }
             return true;
         },

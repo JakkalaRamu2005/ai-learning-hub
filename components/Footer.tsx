@@ -37,13 +37,13 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Learn Column */}
+                    {/* Discover Column */}
                     <div className="footer-column">
-                        <h3 className="footer-heading">Learn</h3>
+                        <h3 className="footer-heading">Discover</h3>
                         <ul className="footer-links">
                             <li>
-                                <Link href="/learn" className="footer-link">
-                                    Courses
+                                <Link href="/videos" className="footer-link">
+                                    Videos
                                 </Link>
                             </li>
                             <li>
@@ -52,13 +52,8 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/learn#tutorials" className="footer-link">
-                                    Tutorials
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/blog" className="footer-link">
-                                    Blog
+                                <Link href="/blogs" className="footer-link">
+                                    Blogs
                                 </Link>
                             </li>
                         </ul>

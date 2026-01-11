@@ -20,12 +20,15 @@ const StarRating = ({ rating, interactive = false, onSetRating }: { rating: numb
     );
 };
 
-const ReviewSection = ({ toolId, onClose }: { toolId: string, onClose: () => void }) => {
+const ReviewSection = ({ toolId, onClose, isInModal = false }: { toolId: string, onClose: () => void, isInModal?: boolean }) => {
     const [reviews, setReviews] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [newComment, setNewComment] = useState("");
     const [newRating, setNewRating] = useState(5);
     const [submitting, setSubmitting] = useState(false);
+    const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+    const [editComment, setEditComment] = useState("");
+    const [editRating, setEditRating] = useState(5);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -81,6 +84,113 @@ const ReviewSection = ({ toolId, onClose }: { toolId: string, onClose: () => voi
         } catch (err) { console.error(err); }
     };
 
+    const handleEditReview = async (reviewId: string) => {
+        if (!editComment.trim()) return;
+
+        try {
+            const res = await fetch(`/api/reviews/${reviewId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ comment: editComment, rating: editRating })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setReviews(prev => prev.map(r => r._id === reviewId ? { ...r, comment: editComment, rating: editRating } : r));
+                setEditingReviewId(null);
+                setEditComment("");
+                setEditRating(5);
+            } else {
+                alert(data.message || "Failed to edit review");
+            }
+        } catch (err) { console.error(err); }
+    };
+
+    const handleDeleteReview = async (reviewId: string) => {
+        if (!confirm("Are you sure you want to delete this review?")) return;
+
+        try {
+            const res = await fetch(`/api/reviews/${reviewId}`, {
+                method: "DELETE"
+            });
+            const data = await res.json();
+            if (data.success) {
+                setReviews(prev => prev.filter(r => r._id !== reviewId));
+            } else {
+                alert(data.message || "Failed to delete review");
+            }
+        } catch (err) { console.error(err); }
+    };
+
+    const startEdit = (review: any) => {
+        setEditingReviewId(review._id);
+        setEditComment(review.comment);
+        setEditRating(review.rating);
+    };
+
+    if (isInModal) {
+        return (
+            <div className="review-section-inline">
+                <form className="add-review-form" onSubmit={handlePostReview}>
+                    <StarRating rating={newRating} interactive onSetRating={setNewRating} />
+                    <textarea
+                        placeholder="Write a micro-review (max 280 chars)..."
+                        maxLength={280}
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        required
+                    />
+                    <button type="submit" disabled={submitting} className="post-review-btn">
+                        {submitting ? "Posting..." : "Post Review"}
+                    </button>
+                </form>
+
+                <div className="reviews-list">
+                    {loading ? <p>Loading reviews...</p> :
+                        reviews.length === 0 ? <p className="no-reviews">No reviews yet. Be the first!</p> :
+                            reviews.map(review => (
+                                <div key={review._id} className="review-item">
+                                    <div className="review-user-info">
+                                        <div className="user-avatar">{review.user.name[0]}</div>
+                                        <div className="user-meta">
+                                            <span className="user-name">{review.user.name}</span>
+                                            <StarRating rating={review.rating} />
+                                        </div>
+                                    </div>
+                                    <p className="review-comment">{review.comment}</p>
+                                    {editingReviewId === review._id ? (
+                                        <div className="edit-review-form">
+                                            <StarRating rating={editRating} interactive onSetRating={setEditRating} />
+                                            <textarea
+                                                value={editComment}
+                                                onChange={(e) => setEditComment(e.target.value)}
+                                                maxLength={280}
+                                                className="edit-textarea"
+                                            />
+                                            <div className="edit-actions">
+                                                <button onClick={() => handleEditReview(review._id)} className="save-edit-btn">Save</button>
+                                                <button onClick={() => setEditingReviewId(null)} className="cancel-edit-btn">Cancel</button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="review-comment">{review.comment}</p>
+                                    )}
+                                    <div className="review-footer">
+                                        <button className={`like-btn ${review.isLiked ? 'active' : ''}`} onClick={() => handleLike(review._id)}>
+                                            <span className="heart">❤</span> {review.likes.length}
+                                        </button>
+                                        <div className="review-actions">
+                                            <button onClick={() => startEdit(review)} className="edit-review-btn">Edit</button>
+                                            <button onClick={() => handleDeleteReview(review._id)} className="delete-review-btn">Delete</button>
+                                        </div>
+                                        <span className="review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            ))}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="review-section-overlay">
             <div className="review-section">
@@ -116,14 +226,86 @@ const ReviewSection = ({ toolId, onClose }: { toolId: string, onClose: () => voi
                                         </div>
                                     </div>
                                     <p className="review-comment">{review.comment}</p>
+                                    {editingReviewId === review._id ? (
+                                        <div className="edit-review-form">
+                                            <StarRating rating={editRating} interactive onSetRating={setEditRating} />
+                                            <textarea
+                                                value={editComment}
+                                                onChange={(e) => setEditComment(e.target.value)}
+                                                maxLength={280}
+                                                className="edit-textarea"
+                                            />
+                                            <div className="edit-actions">
+                                                <button onClick={() => handleEditReview(review._id)} className="save-edit-btn">Save</button>
+                                                <button onClick={() => setEditingReviewId(null)} className="cancel-edit-btn">Cancel</button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="review-comment">{review.comment}</p>
+                                    )}
                                     <div className="review-footer">
                                         <button className={`like-btn ${review.isLiked ? 'active' : ''}`} onClick={() => handleLike(review._id)}>
                                             <span className="heart">❤</span> {review.likes.length}
                                         </button>
+                                        <div className="review-actions">
+                                            <button onClick={() => startEdit(review)} className="edit-review-btn">Edit</button>
+                                            <button onClick={() => handleDeleteReview(review._id)} className="delete-review-btn">Delete</button>
+                                        </div>
                                         <span className="review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
                                     </div>
                                 </div>
                             ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const ToolDetailsModal = ({ tool, onClose }: { tool: any, onClose: () => void }) => {
+    return (
+        <div className="tool-details-overlay" onClick={onClose}>
+            <div className="tool-details-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="tool-details-header">
+                    <div className="tool-details-title-section">
+                        <div className="tool-icon-large">
+                            <span>{tool.name.charAt(0)}</span>
+                        </div>
+                        <div>
+                            <h2 className="tool-details-name">{tool.name}</h2>
+                            <p className="tool-details-category">{tool.category}</p>
+                        </div>
+                    </div>
+                    <button className="close-details" onClick={onClose}>×</button>
+                </div>
+
+                <div className="tool-details-content">
+                    <div className="tool-details-description">
+                        <h3>About</h3>
+                        <p>{tool.description}</p>
+                    </div>
+
+                    <div className="tool-details-meta">
+                        <div className="meta-item">
+                            <span className="meta-label">Pricing:</span>
+                            <span className="meta-value">{tool.pricing}</span>
+                        </div>
+                        <div className="meta-item">
+                            <span className="meta-label">Rating:</span>
+                            <div className="meta-rating">
+                                <StarRating rating={Math.round(tool.averageRating || 0)} />
+                                <span>{tool.averageRating ? tool.averageRating.toFixed(1) : "0.0"}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href={tool.link} target="_blank" rel="noopener noreferrer" className="visit-tool-btn">
+                        Visit Tool Website →
+                    </a>
+
+                    <div className="tool-details-reviews">
+                        <h3>Reviews & Comments ({tool.reviewCount})</h3>
+                        <ReviewSection toolId={tool._id} onClose={() => { }} isInModal={true} />
+                    </div>
                 </div>
             </div>
         </div>
@@ -136,64 +318,74 @@ const ToolCard = ({ tool, isSaved, onToggleSave, onShare }: {
     onToggleSave: (id: string) => void,
     onShare: (tool: any) => void
 }) => {
-    const [showReviews, setShowReviews] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
 
     return (
-        <div className="tool-card">
-            <div className="tool-header">
-                <h3 className="tool-name">
-                    <a href={tool.link} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
-                        {tool.name}
-                    </a>
-                </h3>
-                <div className="tool-actions">
-                    <button
-                        onClick={() => onShare(tool)}
-                        className="share-btn-icon"
-                        title="Share this tool"
-                    >
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
-                        </svg>
-                    </button>
-                    <button
-                        onClick={() => onToggleSave(tool._id)}
-                        className={`save-btn ${isSaved ? 'saved' : ''}`}
-                        title={isSaved ? "Remove from saved" : "Save tool"}
-                    >
-                        {isSaved ? '★' : '☆'}
-                    </button>
+        <>
+            <div className="tool-card" onClick={() => setShowDetails(true)} style={{ cursor: 'pointer' }}>
+                <div className="tool-card-header">
+                    <div className="tool-icon">
+                        <span>{tool.name.charAt(0)}</span>
+                    </div>
+                    <div className="tool-info">
+                        <div className="tool-title-row">
+                            <h3 className="tool-name">
+                                {tool.name}
+                            </h3>
+                            {tool.weekAdded && <span className="launch-badge">Launched this month</span>}
+                        </div>
+                        <p className="tool-tagline">{tool.description}</p>
+                    </div>
+                </div>
+
+                <div className="tool-card-footer">
+                    <div className="rating-section">
+                        <StarRating rating={Math.round(tool.averageRating || 0)} />
+                        <span className="rating-value">{tool.averageRating ? tool.averageRating.toFixed(1) : "0.0"}</span>
+                        <span className="rating-count">({tool.reviewCount} reviews)</span>
+                    </div>
+                    <div className="tool-actions">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowDetails(true);
+                            }}
+                            className="comment-btn"
+                            title="View comments"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <span>{tool.reviewCount}</span>
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onShare(tool);
+                            }}
+                            className="share-btn-icon"
+                            title="Share this tool"
+                        >
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onToggleSave(tool._id);
+                            }}
+                            className={`save-btn ${isSaved ? 'saved' : ''}`}
+                            title={isSaved ? "Remove from saved" : "Save tool"}
+                        >
+                            {isSaved ? '★' : '☆'}
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div className="tool-meta">
-                <div className="rating-info">
-                    <StarRating rating={Math.round(tool.averageRating || 0)} />
-                    <span className="rating-value">{tool.averageRating || "0.0"}</span>
-                    <span className="rating-count">({tool.reviewCount})</span>
-                </div>
-                {tool.weekAdded && <span className="tool-week-badge">{tool.weekAdded}</span>}
-            </div>
-
-            <div className="tool-genre">
-                <span className="tool-category">{tool.category}</span>
-                {tool.averageRating >= 4.5 && <span className="sentiment-tag highly-recommended">Highly Recommended</span>}
-                {tool.averageRating >= 4.0 && tool.averageRating < 4.5 && <span className="sentiment-tag popular">Popular</span>}
-            </div>
-
-            <p className="tool-description">{tool.description}</p>
-
-            <button className="reviews-toggle-btn" onClick={() => setShowReviews(true)}>
-                💬 Reviews & Ratings
-            </button>
-
-            <div className="tool-footer">
-                <span className="tool-pricing">{tool.pricing}</span>
-                <a href={tool.link} target="_blank" className="tool-link" rel="noopener noreferrer">Visit Tool →</a>
-            </div>
-
-            {showReviews && <ReviewSection toolId={tool._id} onClose={() => setShowReviews(false)} />}
-        </div>
+            {showDetails && <ToolDetailsModal tool={tool} onClose={() => setShowDetails(false)} />}
+        </>
     );
 };
 
@@ -219,7 +411,7 @@ function ToolsContent() {
 
         if (urlSearch) setSearchText(urlSearch);
         if (urlCategory) setSelectedCategory(urlCategory);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const fetchTools = async () => {
         try {
@@ -407,44 +599,6 @@ function ToolsContent() {
                 shareUrl={shareData.url}
                 title={shareData.title}
             />
-
-            <h1 className="tools-title">AI Tools Collection</h1>
-            <p className="tools-subtitle">Discover and save your favorite AI tools</p>
-
-            <div className="filter-section">
-                <div className="search-box">
-                    <input
-                        type="text"
-                        placeholder="Search tools..."
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        className="search-input"
-                    />
-                </div>
-
-                <div className="category-filter">
-                    <label className="filter-label">Category:</label>
-                    <select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="category-select"
-                    >
-                        {categories.map((category) => (
-                            <option key={category} value={category}>
-                                {category}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <button
-                    onClick={handleShareCurrentView}
-                    className="share-view-btn"
-                    title="Share current filtered view"
-                >
-                    🔗 Share View
-                </button>
-            </div>
 
             <p className="results-count">
                 {selectedCategory === "All"

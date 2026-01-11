@@ -41,12 +41,13 @@
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
-    background: white;
+    background: var(--bg-primary);
     padding: 1rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     position: relative;
     z-index: 1;
+    border: 1px solid var(--border-color);
 }
 
 .search-box {
@@ -95,7 +96,7 @@
     border-radius: var(--radius-sm);
     font-size: 0.95rem;
     cursor: pointer;
-    background: white;
+    background: var(--bg-primary);
     transition: var(--transition-fast);
     font-family: inherit;
     min-width: 160px;
@@ -189,7 +190,7 @@
 
 /* No Results */
 .no-results {
-    background: white;
+    background: var(--bg-primary);
     padding: 4rem 2rem;
     border-radius: var(--radius-lg);
     text-align: center;
@@ -198,6 +199,7 @@
     box-shadow: var(--shadow-lg);
     position: relative;
     z-index: 1;
+    border: 1px solid var(--border-color);
 }
 
 .no-results p {
@@ -219,14 +221,14 @@
 
 /* Tool Card */
 .tool-card {
-    background: white;
+    background: var(--bg-primary);
     padding: 1.75rem;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     transition: var(--transition-normal);
     display: flex;
     flex-direction: column;
-    border: 1px solid transparent;
+    border: 1px solid var(--border-color);
 }
 
 .tool-card:hover {
@@ -419,6 +421,412 @@
 .tool-link:hover {
     color: #4f46e5;
     transform: translateX(4px);
+}
+
+/* New Tool Card Styles */
+.tool-card-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tool-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tool-icon span {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.tool-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.tool-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.tool-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin: 0;
+}
+
+.tool-name a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.tool-name a:hover {
+    color: var(--secondary-color);
+}
+
+.launch-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b6b, #ff8787);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.tool-tagline {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tool-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.rating-section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rating-section .rating-value {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.rating-section .rating-count {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Comment Button */
+.comment-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition-fast);
+}
+
+.comment-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+.comment-btn svg {
+    flex-shrink: 0;
+}
+
+/* Review Actions */
+.review-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-review-btn,
+.delete-review-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: var(--transition-fast);
+}
+
+.edit-review-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.delete-review-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* Edit Review Form */
+.edit-review-form {
+    background: var(--bg-secondary);
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.edit-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.edit-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.save-edit-btn,
+.cancel-edit-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    border: none;
+}
+
+.save-edit-btn {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.save-edit-btn:hover {
+    background: #4f46e5;
+}
+
+.cancel-edit-btn {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.cancel-edit-btn:hover {
+    background: var(--border-color);
+}
+
+.review-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+
+/* Tool Details Modal */
+.tool-details-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.tool-details-modal {
+    background: var(--bg-primary);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+.tool-details-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.tool-details-title-section {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.tool-icon-large {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tool-icon-large span {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.tool-details-name {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 4px 0;
+}
+
+.tool-details-category {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.close-details {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0;
+    line-height: 1;
+    transition: var(--transition-fast);
+}
+
+.close-details:hover {
+    color: var(--text-primary);
+}
+
+.tool-details-content {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.tool-details-description h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 12px 0;
+}
+
+.tool-details-description p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+}
+
+.tool-details-meta {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meta-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.meta-value {
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.meta-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.visit-tool-btn {
+    display: inline-block;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    margin-bottom: 32px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.visit-tool-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.tool-details-reviews h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 20px 0;
+}
+
+.review-section-inline {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-section-inline .add-review-form {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.review-section-inline .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 /* Loading State - Using Global Helper */
@@ -632,7 +1040,7 @@
 }
 
 .reviews-toggle-btn {
-    background: #f3f4f6;
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     padding: 8px 16px;
     border-radius: 8px;
@@ -649,7 +1057,7 @@
 }
 
 .reviews-toggle-btn:hover {
-    background: white;
+    background: var(--bg-primary);
     border-color: var(--secondary-color);
     color: var(--secondary-color);
     transform: translateY(-2px);
@@ -672,7 +1080,7 @@
 }
 
 .review-section {
-    background: white;
+    background: var(--bg-primary);
     width: 100%;
     max-width: 550px;
     max-height: 85vh;
@@ -707,7 +1115,7 @@
 
 .add-review-form {
     padding: 24px;
-    background: #f9fafb;
+    background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;

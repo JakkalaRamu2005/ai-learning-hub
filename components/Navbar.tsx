@@ -103,7 +103,6 @@ export default function Navbar() {
             <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
                 <div className="navbar-container">
                     <Link href="/" className="navbar-logo">
-                        <span className="logo-icon">🤖</span>
                         <h2>AI Learning Hub</h2>
                     </Link>
 
@@ -126,42 +125,50 @@ export default function Navbar() {
                             href="/"
                             className={`nav-link ${isActive("/") ? "active" : ""}`}
                         >
-                            <span className="link-icon">🏠</span>
                             <span>Home</span>
                         </Link>
-                        <Link
-                            href="/tools"
-                            className={`nav-link ${isActive("/tools") ? "active" : ""}`}
-                        >
-                            <span className="link-icon">🛠️</span>
-                            <span>AI Tools</span>
-                        </Link>
-                        <Link
-                            href="/learn"
-                            className={`nav-link ${isActive("/learn") ? "active" : ""}`}
-                        >
-                            <span className="link-icon">📚</span>
-                            <span>Learn</span>
-                        </Link>
+                        <div className="nav-dropdown-container">
+                            <Link
+                                href="/tools"
+                                className={`nav-link ${isActive("/tools") ? "active" : ""}`}
+                            >
+                                <span>AI Tools</span>
+                            </Link>
+                            <div className="nav-dropdown-menu">
+                                <div className="dropdown-section">
+                                    <h4 className="dropdown-section-title">Trending Categories</h4>
+                                    <Link href="/tools?category=AI Writing" className="dropdown-category-item">AI Writing</Link>
+                                    <Link href="/tools?category=AI Image" className="dropdown-category-item">AI Image</Link>
+                                    <Link href="/tools?category=AI Video" className="dropdown-category-item">AI Video</Link>
+                                    <Link href="/tools?category=AI Code" className="dropdown-category-item">AI Code</Link>
+                                    <Link href="/tools?category=AI Chat" className="dropdown-category-item">AI Chat</Link>
+                                </div>
+                                <div className="dropdown-section">
+                                    <h4 className="dropdown-section-title">More Categories</h4>
+                                    <Link href="/tools?category=AI Voice" className="dropdown-category-item">AI Voice</Link>
+                                    <Link href="/tools?category=AI Marketing" className="dropdown-category-item">AI Marketing</Link>
+                                    <Link href="/tools?category=AI Analytics" className="dropdown-category-item">AI Analytics</Link>
+                                    <Link href="/tools?category=AI Productivity" className="dropdown-category-item">AI Productivity</Link>
+                                    <Link href="/tools?category=AI Design" className="dropdown-category-item">AI Design</Link>
+                                </div>
+                            </div>
+                        </div>
                         <Link
                             href="/blogs"
                             className={`nav-link ${isActive("/blogs") ? "active" : ""}`}
                         >
-                            <span className="link-icon">📰</span>
                             <span>Blogs</span>
                         </Link>
                         <Link
                             href="/videos"
                             className={`nav-link ${isActive("/videos") ? "active" : ""}`}
                         >
-                            <span className="link-icon">🎬</span>
                             <span>Videos</span>
                         </Link>
                         <Link
                             href="/resources"
                             className={`nav-link ${isActive("/resources") ? "active" : ""}`}
                         >
-                            <span className="link-icon">🗂️</span>
                             <span>Resources</span>
                         </Link>
                         <button
@@ -198,14 +205,14 @@ export default function Navbar() {
                                             <p className="user-email">{session.user?.email}</p>
                                             {user?.role && (
                                                 <span className={`role-badge-nav ${user.role}`}>
-                                                    {user.role === "admin" && "👑 Admin"}
-                                                    {user.role === "user" && "👤 User"}
+                                                    {user.role === "admin" && "Admin"}
+                                                    {user.role === "user" && "User"}
                                                 </span>
                                             )}
                                         </div>
 
                                         <Link href="/profile" className="dropdown-item">
-                                            <span>👤</span> Your Profile
+                                            Your Profile
                                         </Link>
                                         <button onClick={() => signOut()} className="dropdown-item logout-item">
                                             <span>Sign out</span>
